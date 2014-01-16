@@ -1,0 +1,22 @@
+{
+  "name": "virgo-update-service",
+  "version": "0.0.0",
+  "description": "Updater Service for Virgo Services",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/virgo-agent-toolkit/virgo-update-service.git"
+  },
+  "author": "Ryan Phillips <ryan.phillips@rackspace.com>",
+  "license": "APACHE-2",
+  "bugs": {
+    "url": "https://github.com/virgo-agent-toolkit/virgo-update-service/issues"
+  },
+  "homepage": "https://github.com/virgo-agent-toolkit/virgo-update-service",
+  "dependencies": {
+    "express": "3.4.7"
+  }
+}
