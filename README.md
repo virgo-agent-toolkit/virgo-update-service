@@ -1,5 +1,7 @@
 ## virgo-update-service
 
+[![Build Status](https://travis-ci.org/virgo-agent-toolkit/virgo-update-service.png?branch=master)](https://travis-ci.org/virgo-agent-toolkit/virgo-update-service)
+
 NodeJS Service for Virgo Updates
 
 The service shall provide the following features:
