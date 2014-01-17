@@ -1,0 +1,8 @@
+{
+  "pkgcloud": {
+    "username": '',
+    "apiKey": '',
+    "provider": ''
+  },
+  "data_dir": ''
+}
