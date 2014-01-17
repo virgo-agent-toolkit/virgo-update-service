@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/virgo-agent-toolkit/virgo-update-service",
   "scripts": {
-    "test": "make test-all"
+    "test": "make test"
   },
   "devDependencies": {
     "mocha": "1.17.x",
