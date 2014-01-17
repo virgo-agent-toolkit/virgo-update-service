@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "express": "3.4.x",
+    "helenus": "0.6.x",
     "pkgcloud": "0.8.x",
     "optimist": "0.6.x"
   }
