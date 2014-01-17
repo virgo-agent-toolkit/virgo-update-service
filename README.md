@@ -14,5 +14,5 @@ The service shall provide the following features:
       2. wait for all instances to download the PkgCloud bucket
       3. report back to the group that an upgrade to version X.Y.Z is allowed
       4. profit
-  * Store in cassandra
-    1. The channel and version number for traceability
+  * On upgrade, trigger a webhook with payload information of the upgrade
+    1. Timestamp, channel and version number for traceability
