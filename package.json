@@ -22,7 +22,8 @@
   },
   "devDependencies": {
     "mocha": "1.17.x",
-    "should": "3.0.x"
+    "should": "3.0.x",
+    "jscoverage": "0.3.8"
   },
   "dependencies": {
     "async": "0.2.8",

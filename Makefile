@@ -1,16 +1,13 @@
 REPORTER = spec
 MOCHA_FLAGS = -t 5000 -s 500
 
-jscoverage: ./node_modules/jscoverage/jscoverage.node
-
-./node_modules/jscoverage/jscoverage.node:
-	npm install jscoverage
+all: lint test
 
 lint:
 	node_modules/.bin/nodelint --config .jslint.conf lib/**/*.js bin/*
 
-test: lint jscoverage
+test: lint
 	@NODE_ENV=mocha ./node_modules/.bin/mocha \
 		--reporter $(REPORTER) $(MOCHA_FLAGS)
 
-.PHONY: test jscoverage
+.PHONY: test all lint
