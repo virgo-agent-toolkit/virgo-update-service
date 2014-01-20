@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "async": "0.2.8",
+    "node-etcd": "2.0.x",
     "express": "3.4.x",
     "mkdirp": "0.3.x",
     "nodelint": "0.6.2",

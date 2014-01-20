@@ -1,4 +1,8 @@
 #!/usr/bin/env node
 
-var api = require('../lib/api');
+var entry = require('../lib').entry;
 
+entry({
+  port: 1227,
+  etcd_hosts: ['etcd://etcd0.vagrant.dev:4001/']
+});
