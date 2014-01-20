@@ -1,13 +1,13 @@
 {
-  pkgcloud: {
-    username: '',
-    apiKey: '',
-    provider: ''
+  "pkgcloud": {
+    "username": "",
+    "apiKey": "",
+    "provider": ""
   },
-  data_dir: '',
-  etcd_hosts: [
-    'etcd://etcd0.vagrant.dev:4001/'
+  "data_dir": "",
+  "etcd_hosts": [
+    "etcd://etcd0.vagrant.dev:4001/"
   ],
-  listen_host: '127.0.0.1',
-  listen_port: 34000
+  "listen_host": "127.0.0.1",
+  "listen_port": 34000
 }

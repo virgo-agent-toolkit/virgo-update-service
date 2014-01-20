@@ -1,8 +1,24 @@
 #!/usr/bin/env node
 
-var entry = require('../lib').entry;
+var fs = require('fs');
+var argv = require('optimist')
+  .usage('virgo-update-service')
+  .demand('c')
+  .alias('c', 'config')
+  .describe('c', 'load config')
+  .argv;
 
-entry({
-  port: 1227,
-  etcd_hosts: ['etcd://etcd0.vagrant.dev:4001/']
-});
+var entry = require('../lib').entry;
+var logger = require('../lib/logger').logger;
+var options;
+
+try {
+  options = JSON.parse(fs.readFileSync(argv.c));
+} catch (err) {
+  logger.error('Error parsing config.', {error: err});
+  process.exit(1);
+}
+
+options.argv = argv;
+
+entry(options);
