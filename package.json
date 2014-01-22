@@ -4,7 +4,9 @@
   "description": "Updater Service for Virgo Services",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "run-dev": "./node_modules/.bin/nodemon bin/virgo-update-service -c config.json.settings-vagrant",
+    "test": "make test",
+    "lint": "make lint"
   },
   "repository": {
     "type": "git",
@@ -16,10 +18,6 @@
     "url": "https://github.com/virgo-agent-toolkit/virgo-update-service/issues"
   },
   "homepage": "https://github.com/virgo-agent-toolkit/virgo-update-service",
-  "scripts": {
-    "test": "make test",
-    "lint": "make lint"
-  },
   "devDependencies": {
     "mocha": "1.17.x",
     "should": "3.0.x",
@@ -34,6 +32,7 @@
     "pkgcloud": "0.8.x",
     "optimist": "0.6.x",
     "underscore": "1.4.x",
-    "winston": "0.7.x"
+    "winston": "0.7.x",
+    "nodemon": "1.0.x"
   }
 }
