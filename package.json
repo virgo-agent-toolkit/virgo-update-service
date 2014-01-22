@@ -21,7 +21,8 @@
   "devDependencies": {
     "mocha": "1.17.x",
     "should": "3.0.x",
-    "jscoverage": "0.3.8"
+    "jscoverage": "0.3.x",
+    "nodemon": "1.0.x"
   },
   "dependencies": {
     "async": "0.2.8",
