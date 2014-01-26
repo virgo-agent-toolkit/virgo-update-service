@@ -2,6 +2,7 @@ var async = require('async');
 var Etcd = require('node-etcd');
 var os = require('os');
 var url = require('url');
+var logger = require('../logger');
 
 var TTL = 10; // Seconds
 var REREGISTER = 7; // Seconds
@@ -51,30 +52,31 @@ function register(options) {
       index = 0,
       client;
 
-  async.whilst(function() {
-                 return !registered;
-               },
-               function(callback) {
-                 var parsed = url.parse(hosts[index % hosts.length]);
-                 parsed.port = parsed.port || 4001;
-                 client = new Etcd(parsed.hostname, parsed.port);
-                 _register(client, function(err) {
-                   if (err) {
-                     setTimeout(callback, 5000);
-                     callback();
-                   } else {
-                     registered = true;
-                     callback();
-                   }
-                 })();
-               },
-               function(err) {
-                 if (err) {
-                   return;
-                 }
-                 console.log('Registered as ' + instanceId());
-                 setInterval(_register(client), REREGISTER);
-               });
+  async.whilst(
+    function() {
+      return !registered;
+    },
+    function(callback) {
+      var parsed = url.parse(hosts[index % hosts.length]);
+      parsed.port = parsed.port || 4001;
+      client = new Etcd(parsed.hostname, parsed.port);
+      _register(client, function(err) {
+        if (err) {
+          setTimeout(callback, 5000);
+          callback();
+        } else {
+          registered = true;
+          callback();
+        }
+      })();
+    },
+    function(err) {
+      if (err) {
+        return;
+      }
+      logger.info('Registered as ' + instanceId());
+      setInterval(_register(client), REREGISTER);
+    });
 }
 
 exports.register = register;
