@@ -12,9 +12,11 @@ function availableVersions(req, res) {
     }
     var results = [];
     _.each(containers, function(c) {
-      results.push(c.name);
+      if (/^[0-9.\-]+$/.test(c.name)) {
+        results.push(c.name);
+      }
     });
-    res.json(results);
+    res.json(results.sort().reverse());
   });
 }
 
