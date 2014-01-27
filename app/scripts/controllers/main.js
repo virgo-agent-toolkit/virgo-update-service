@@ -1,6 +1,8 @@
-var controllers = angular.module('upgradeAppControllers', []);
+var controllers = angular.module('upgradeAppControllers', ['upgradeAppServices']);
 
-controllers.controller('MainController', function($scope) {
-  $scope.versions = ['1.2.3', '1.2.4']
+controllers.controller('MainController', function($scope, UpgradeService) {
+  UpgradeService.getAvailableVersions().then(function(data) {
+    $scope.versions = data;
+  });
 });
 

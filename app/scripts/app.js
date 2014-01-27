@@ -1,4 +1,4 @@
-var upgradeApp = angular.module('upgradeApp', ['ngRoute', 'upgradeAppControllers']);
+var upgradeApp = angular.module('upgradeApp', ['ngRoute', 'upgradeAppServices', 'upgradeAppControllers']);
 
 upgradeApp.config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/test', {

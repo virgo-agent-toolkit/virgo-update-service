@@ -3,16 +3,29 @@
   <head>
     <meta charset="utf-8">
     <title>Virgo Upgrade Service</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap-theme.css">
     <script src="components/jquery/jquery.js"></script>
+    <script src="components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="components/angular/angular.js"></script>
     <script src="components/angular-route/angular-route.js"></script>
-    <script src="scripts/controllers/main.js"></script>
     <script src="scripts/app.js"></script>
+    <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/services/upgrade.js"></script>
   </head>
 
   <body>
-    <div ng-view class="view-frame"></div>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">Virgo Upgrade Service</a>
+      </div>
+    </nav>
+
+    <div>
+      <div ng-view></div>
+    </div>
   </body>
 
 </html>
