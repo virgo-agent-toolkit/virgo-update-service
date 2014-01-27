@@ -1,7 +1,33 @@
 <div class="container">
 
-<select class="form-control" data-style="btn-primary">
-  <option ng-repeat="version in versions">{{version}}</option>
-</select>
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Stable</h2>
+          <p><select class="form-control" data-style="btn-primary">
+            <option ng-repeat="version in versions">{{version}}</option>
+          </select></p>
+          <p><a class="btn btn-default" href="#" role="button">Upgrade &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>Unstable</h2>
+          <p><select class="form-control" data-style="btn-primary">
+            <option ng-repeat="version in versions">{{version}}</option>
+          </select></p>
+          <p><a class="btn btn-default" href="#" role="button">Upgrade &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>Master</h2>
+          <p><select class="form-control" data-style="btn-primary">
+            <option ng-repeat="version in versions">{{version}}</option>
+          </select></p>
+          <p><a class="btn btn-default" href="#" role="button">Upgrade &raquo;</a></p>
+        </div>
+      </div>
+      <hr>
+    </div> <!-- /container -->
+
+
 
 </div>
