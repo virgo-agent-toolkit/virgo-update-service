@@ -24,5 +24,5 @@ function availableVersions(req, res) {
 exports.register = function(app) {
   // v1
   var v1prefix = '/v1';
-  app.get(v1prefix + '/pkgcloud/available_versions', availableVersions);
+  app.get(v1prefix + '/available_versions', availableVersions);
 };
