@@ -52,6 +52,7 @@ function register(options) {
       index = 0,
       client;
 
+  /*
   async.whilst(
     function() {
       return !registered;
@@ -77,6 +78,7 @@ function register(options) {
       logger.info('Registered as ' + instanceId());
       setInterval(_register(client), REREGISTER);
     });
+  */
 }
 
 exports.register = register;
