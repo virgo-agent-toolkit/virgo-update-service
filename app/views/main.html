@@ -1,25 +1,26 @@
 <div class="container">
-
     <div id="messages" ng-show="message">{{ message }}</div>
-
     <div class="container">
       <div class="row">
         <div class="col-md-4">
           <h2>Agents</h2>
-          <p><select class="form-control" data-style="btn-primary">
-            <option>Master</option>
-            <option>Unstable</option>
-            <option>Stable</option>
-          </select></p>
-          <p><select class="form-control" data-style="btn-primary">
-            <option ng-repeat="version in versions">{{version}}</option>
-          </select></p>
-          <p><a class="btn btn-default" href="#" role="button">Upgrade &raquo;</a></p>
-        </div>
+          <form ng-submit="deploy()">
+            <p><select class="form-control" data-style="btn-primary" ng-model="deployData.channel">
+              <option>Master</option>
+              <option>Unstable</option>
+              <option>Stable</option>
+            </select></p>
+            <p><select class="form-control" data-style="btn-primary"
+              ng-model="deployData.version">
+              <option ng-repeat="version in versions">{{version}}</option>
+            </select></p>
+            <!-- SUBMIT BUTTON -->
+            <button type="submit" class="btn btn-success btn-lg btn-block">
+              <span class="glyphicon glyphicon-flash"></span> Deploy
+            </button>
+          </div>
+        </form>
       </div>
       <hr>
     </div> <!-- /container -->
-
-
-
 </div>

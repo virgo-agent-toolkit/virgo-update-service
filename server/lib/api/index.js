@@ -20,9 +20,14 @@ function availableVersions(req, res) {
   });
 }
 
+function deploy(req, res) {
+  res.json({});
+}
+
 
 exports.register = function(app) {
   // v1
   var v1prefix = '/v1';
   app.get(v1prefix + '/available_versions', availableVersions);
+  app.post(v1prefix + '/deploy', deploy);
 };

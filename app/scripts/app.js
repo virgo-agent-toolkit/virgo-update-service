@@ -4,7 +4,12 @@ upgradeApp.config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/', {
     templateUrl: 'views/main.html',
     controller: 'MainController'
-  }).otherwise({
+  })
+  .when('/deploy', {
+    templateUrl: 'views/deploy.html',
+    controller: 'MainController'
+  })
+  .otherwise({
     redirectTo: '/'
   });
 }]);
