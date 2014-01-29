@@ -1,4 +1,9 @@
-var upgradeApp = angular.module('upgradeApp', ['ngRoute', 'upgradeAppServices', 'upgradeAppControllers']);
+var upgradeApp = angular.module('upgradeApp', [
+  'btford.socket-io',
+  'ngRoute',
+  'upgradeAppWebSocket',
+  'upgradeAppServices'
+]);
 
 upgradeApp.config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/', {
@@ -7,7 +12,7 @@ upgradeApp.config(['$routeProvider', function($routeProvider) {
   })
   .when('/deploy', {
     templateUrl: 'views/deploy.html',
-    controller: 'MainController'
+    controller: 'DeployController'
   })
   .otherwise({
     redirectTo: '/'

@@ -1,6 +1,6 @@
-var controllers = angular.module('upgradeAppControllers', ['upgradeAppServices']);
+var upgradeApp = angular.module('upgradeApp');
 
-controllers.controller('MainController', function($scope, UpgradeService, $location) {
+upgradeApp.controller('MainController', function($scope, UpgradeService, $location) {
   $scope.deployData = {};
 
   UpgradeService.getAvailableVersions().success(function(data) {

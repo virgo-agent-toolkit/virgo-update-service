@@ -4,6 +4,8 @@
     "bootstrap": "~3.0.3",
     "angular": "~1.2.9",
     "angular-route": "~1.2.10",
-    "bootstrap-select": "~1.4.3"
+    "bootstrap-select": "~1.4.3",
+    "angular-socket-io": "~0.3.0",
+    "socket.io-client": "~0.9.16"
   }
 }
