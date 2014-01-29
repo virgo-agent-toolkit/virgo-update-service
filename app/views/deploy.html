@@ -1,3 +1,7 @@
 <div class="container">
-  <p ng-repeat="line in data  track by $index">{{line}}</p>
+  <div class="content">
+    <pre class="deployment_log">
+      <p ng-repeat="line in data track by $index" >{{line}}</p>
+    </pre>
+  </div>
 </div>
