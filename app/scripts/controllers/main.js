@@ -10,7 +10,7 @@ upgradeApp.controller('MainController', function($scope, UpgradeService, $locati
   });
 
   $scope.deploy = function() {
-    UpgradeService.deploy($scope.deployData.channel, $scope.deployData.version)
+    UpgradeService.deploy($scope.deployData)
       .success(function() {
         $location.path('/deploy');
       });
