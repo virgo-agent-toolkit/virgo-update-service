@@ -7,5 +7,6 @@
   "data_dir": "",
   "etcd_hosts": "127.0.0.1:4001",
   "listen_host": "127.0.0.1",
-  "listen_port": 34000
+  "listen_port": 34000,
+  "service_name": "virgo-upgrade-service"
 }

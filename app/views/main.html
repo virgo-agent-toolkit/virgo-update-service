@@ -1,25 +1,31 @@
 <div class="container">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4">
-          <h2>Agents</h2>
-          <form novalidate ng-submit="deploy()">
-            <p><select required class="form-control" data-style="btn-primary" ng-model="deployData.channel">
-              <option selected>master</option>
-              <option>unstable</option>
-              <option>stable</option>
-            </select></p>
-            <p><select required class="form-control" data-style="btn-primary"
-              ng-model="deployData.version">
-              <option ng-repeat="version in versions">{{version}}</option>
-            </select></p>
-            <!-- SUBMIT BUTTON -->
-            <button ng-disabled="isUnchanged(deployData)" type="submit" class="btn btn-success btn-lg btn-block">
-              <span class="glyphicon glyphicon-flash"></span> Deploy
-            </button>
-          </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <h2>Agents</h2>
+        <form novalidate ng-submit="deploy()">
+          <p><select required class="form-control" data-style="btn-primary" ng-model="deployData.channel">
+            <option selected>master</option>
+            <option>unstable</option>
+            <option>stable</option>
+          </select></p>
+          <p><select required class="form-control" data-style="btn-primary"
+            ng-model="deployData.version">
+            <option ng-repeat="version in versions">{{version}}</option>
+          </select></p>
+          <!-- SUBMIT BUTTON -->
+          <button ng-disabled="isUnchanged(deployData)" type="submit" class="btn btn-success btn-lg btn-block">
+            <span class="glyphicon glyphicon-flash"></span> Deploy
+          </button>
         </form>
       </div>
-      <hr>
-    </div> <!-- /container -->
+      <div class="col-md-4">
+        <h2>Cluster</h2>
+        <ul>
+          <li ng-repeat="server in servers"><a href="{{server.url}}">{{server.host}}</a></li>
+        </ul>
+      </div>
+    </div>
+    <hr>
+  </div> <!-- /container -->
 </div>

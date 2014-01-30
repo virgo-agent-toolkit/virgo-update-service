@@ -13,6 +13,10 @@ upgradeApp.controller('MainController', function($scope, UpgradeService, $locati
     $scope.message = err;
   });
 
+  UpgradeService.getServiceNodes().success(function(data) {
+    $scope.servers = data;
+  });
+
   $scope.deploy = function() {
     UpgradeService.deploy($scope.deployData)
       .success(function() {
@@ -20,4 +24,3 @@ upgradeApp.controller('MainController', function($scope, UpgradeService, $locati
       });
   };
 });
-

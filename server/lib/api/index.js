@@ -1,5 +1,6 @@
 var pkgcloud = require('pkgcloud');
 var logger = require('../logger');
+var registry = require('etcd-registry');
 var _ = require('underscore');
 
 function availableVersions(req, res) {
@@ -20,6 +21,18 @@ function availableVersions(req, res) {
   });
 }
 
+function nodes(req, res) {
+  var reg = registry(req.globalOptions.etcd_hosts);
+
+  reg.list(req.globalOptions.service_name, function(err, s) {
+    if (err) {
+      res.error(500, err.message);
+      return;
+    }
+    res.json(s);
+  });
+}
+
 function deploy(req, res) {
   res.json({});
 }
@@ -27,7 +40,8 @@ function deploy(req, res) {
 
 exports.register = function(app) {
   // v1
-  var v1prefix = '/v1';
-  app.get(v1prefix + '/available_versions', availableVersions);
-  app.post(v1prefix + '/deploy', deploy);
+  var PREFIX = '/v1';
+  app.get(PREFIX + '/available_versions', availableVersions);
+  app.get(PREFIX + '/nodes', nodes);
+  app.post(PREFIX + '/deploy', deploy);
 };
