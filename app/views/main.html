@@ -3,18 +3,18 @@
       <div class="row">
         <div class="col-md-4">
           <h2>Agents</h2>
-          <form ng-submit="deploy()">
-            <p><select class="form-control" data-style="btn-primary" ng-model="deployData.channel">
-              <option>Master</option>
-              <option>Unstable</option>
-              <option>Stable</option>
+          <form novalidate ng-submit="deploy()">
+            <p><select required class="form-control" data-style="btn-primary" ng-model="deployData.channel">
+              <option selected>master</option>
+              <option>unstable</option>
+              <option>stable</option>
             </select></p>
-            <p><select class="form-control" data-style="btn-primary"
+            <p><select required class="form-control" data-style="btn-primary"
               ng-model="deployData.version">
               <option ng-repeat="version in versions">{{version}}</option>
             </select></p>
             <!-- SUBMIT BUTTON -->
-            <button type="submit" class="btn btn-success btn-lg btn-block">
+            <button ng-disabled="isUnchanged(deployData)" type="submit" class="btn btn-success btn-lg btn-block">
               <span class="glyphicon glyphicon-flash"></span> Deploy
             </button>
           </div>
