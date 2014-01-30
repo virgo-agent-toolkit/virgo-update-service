@@ -8,7 +8,7 @@ var argv = require('optimist')
   .describe('c', 'load config')
   .argv;
 
-var entry = require('../lib').entry;
+var entry = require('../lib/entry').entry;
 var logger = require('../lib/logger').logger;
 var options;
 

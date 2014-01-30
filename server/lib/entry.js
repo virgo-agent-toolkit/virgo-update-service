@@ -1,10 +1,10 @@
-var express = require('express');
-var service = require('./service')
 var api = require('./api');
+var express = require('express');
+var http = require('http');
+var io = require('socket.io');
 var logger = require('./logger').logger;
 var path = require('path');
-var io = require('socket.io');
-var http = require('http');
+var registry = require('etcd-registry');
 
 function connection(socket) {
   function go() {
@@ -19,7 +19,8 @@ function connection(socket) {
 
 function entry(options) {
   var app = express(),
-      server = http.createServer(app);
+      server = http.createServer(app),
+      services;
 
   function optionsMiddleware(req, res, next) {
     req.globalOptions = options;
@@ -34,6 +35,9 @@ function entry(options) {
 
   io = io.listen(server);
   io.sockets.on('connection', connection);
+
+  services = registry(options.etcd_hosts);
+  services.join('virgo-upgrade-service', {port: options.listen_port});
 
   server.listen(options.listen_port, options.listen_host, function(err) {
     if (err) {
