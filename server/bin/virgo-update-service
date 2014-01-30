@@ -6,6 +6,10 @@ var argv = require('optimist')
   .demand('c')
   .alias('c', 'config')
   .describe('c', 'load config')
+  .alias('p', 'peers')
+  .describe('p', 'etcd peers')
+  .alias('b', 'bind-addr')
+  .describe('b', 'bind address')
   .argv;
 
 var entry = require('../lib/entry').entry;

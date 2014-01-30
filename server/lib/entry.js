@@ -5,6 +5,7 @@ var io = require('socket.io');
 var logger = require('./logger').logger;
 var path = require('path');
 var registry = require('etcd-registry');
+var url = require('url');
 
 function connection(socket) {
   function go() {
@@ -27,6 +28,20 @@ function entry(options) {
     next();
   }
 
+  // coerce commandline arguments to comma delimited string
+  if (options.argv.peers) {
+    if (typeof(options.argv.peers) === 'object') {
+      options.etcd_hosts = options.argv.peers.join(',');
+    }
+  }
+  if (options.argv['bind-addr']) {
+    var l = options.argv['bind-addr'].split(':');
+    options.listen_host = l[0];
+    options.listen_port = l[1];
+  }
+
+  logger.info('Using etcd hosts: %s', options.etcd_hosts);
+
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.static(path.join(__dirname, '..', '..', 'app')));
@@ -44,6 +59,7 @@ function entry(options) {
 
   server.listen(options.listen_port, options.listen_host, function(err) {
     if (err) {
+      logger.error('error listening', err.message);
       return;
     }
     logger.info('Listening on %s:%s', options.listen_host, options.listen_port)
