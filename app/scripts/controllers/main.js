@@ -7,10 +7,8 @@ upgradeApp.controller('MainController', function($scope, UpgradeService, $locati
     return data.version === undefined || data.channel === undefined;
   };
 
-  UpgradeService.getAvailableVersions().success(function(data) {
-    $scope.versions = data;
-  }).error(function(err) {
-    $scope.message = err;
+  UpgradeService.getAvailableVersions().success(function(msg) {
+    $scope.availableVersions = msg;
   });
 
   UpgradeService.getServiceNodes().success(function(data) {

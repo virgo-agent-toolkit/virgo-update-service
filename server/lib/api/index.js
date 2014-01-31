@@ -1,5 +1,6 @@
 var pkgcloud = require('pkgcloud');
 var logger = require('../logger');
+var messages = require('./messages');
 var registry = require('etcd-registry');
 var _ = require('underscore');
 
@@ -7,8 +8,7 @@ function availableVersions(req, res) {
   var client = pkgcloud.storage.createClient(req.globalOptions.pkgcloud);
   client.getContainers(function(err, containers) {
     if (err) {
-      res.send(500, err.message);
-      return;
+      return res.json(messages.ErrorResponse(err));
     }
     var results = [];
     _.each(containers, function(c) {
@@ -16,7 +16,7 @@ function availableVersions(req, res) {
         results.push(c.name);
       }
     });
-    res.json(results.sort().reverse());
+    res.json(new messages.Response(results.sort().reverse()));
   });
 }
 
@@ -25,9 +25,9 @@ function nodes(req, res) {
 
   reg.list(req.globalOptions.service_name, function(err, s) {
     if (err) {
-      return;
+      return res.json(messages.ErrorResponse(err));
     }
-    res.json(s);
+    res.json(new messages.Response(s));
   });
 }
 
