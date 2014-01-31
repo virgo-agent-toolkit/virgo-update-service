@@ -1,28 +1,43 @@
 #!/usr/bin/env node
 
 var fs = require('fs');
+var _ = require('underscore');
 var argv = require('optimist')
   .usage('virgo-update-service')
-  .demand('c')
   .alias('c', 'config')
   .describe('c', 'load config')
   .alias('p', 'peers')
   .describe('p', 'etcd peers')
   .alias('b', 'bind-addr')
   .describe('b', 'bind address')
+  .alias('a', 'api-key')
+  .describe('a', 'api key')
+  .alias('u', 'username')
+  .describe('u', 'username')
   .argv;
 
 var entry = require('../lib/entry').entry;
 var logger = require('../lib/logger').logger;
-var options;
+var default_options = {
+  pkgcloud: { provider: 'rackspace' },
+  data_dir: '/var/data',
+  service_name: 'virgo-upgrade-service',
+  listen_host: '127.0.0.1',
+  listen_port: 34000
+};
 
-try {
-  options = JSON.parse(fs.readFileSync(argv.c));
-} catch (err) {
-  logger.error('Error parsing config.', {error: err});
-  process.exit(1);
+var options = {};
+if (argv.c) {
+  try {
+    options = JSON.parse(fs.readFileSync(argv.c));
+  } catch (err) {
+    logger.error('Error parsing config.', {error: err});
+    process.exit(1);
+  }
 }
 
+// merge in the default options
+options = _.defaults(options, default_options);
 options.argv = argv;
 
 entry(options);

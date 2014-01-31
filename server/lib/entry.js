@@ -6,6 +6,7 @@ var logger = require('./logger').logger;
 var path = require('path');
 var registry = require('etcd-registry');
 var url = require('url');
+var _ = require('underscore');
 
 function connection(socket) {
   function go() {
@@ -41,8 +42,12 @@ function entry(options) {
     options.listen_host = l[0];
     options.listen_port = l[1];
   }
-
-  logger.info('Using etcd hosts: %s', options.etcd_hosts);
+  if (options.argv.a) {
+    options.pkgcloud.apiKey = options.argv.a;
+  }
+  if (options.argv.u) {
+    options.pkgcloud.username = options.argv.u;
+  }
 
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
@@ -64,6 +69,7 @@ function entry(options) {
       logger.error('error listening', err.message);
       return;
     }
+    logger.info('Using etcd hosts: %s', options.etcd_hosts);
     logger.info('Listening on %s:%s', options.listen_host, options.listen_port)
   });
 }

@@ -6,6 +6,7 @@ RUN echo "deb http://us.archive.ubuntu.com/ubuntu/ precise universe" >> /etc/apt
 RUN apt-get update
 RUN apt-get install -y nodejs git-core
 ADD . /var/service
-EXPOSE 34000
 RUN (cd /var/service && make deps)
-ENTRYPOINT ['node', '/var/service/server/bin/virgo-update-service', '-c', '/var/service/server/local_settings.js-vagrant']
+
+EXPOSE 34000
+ENTRYPOINT ["/var/service/server/bin/virgo-update-service"]
