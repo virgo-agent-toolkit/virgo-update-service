@@ -7,7 +7,6 @@ function availableVersions(req, res) {
   var client = pkgcloud.storage.createClient(req.globalOptions.pkgcloud);
   client.getContainers(function(err, containers) {
     if (err) {
-      logger.error(err);
       res.send(500, err.message);
       return;
     }
@@ -26,7 +25,6 @@ function nodes(req, res) {
 
   reg.list(req.globalOptions.service_name, function(err, s) {
     if (err) {
-      res.error(500, err.message);
       return;
     }
     res.json(s);

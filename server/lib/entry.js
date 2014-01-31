@@ -60,8 +60,7 @@ function entry(options) {
 
   services = registry(options.etcd_hosts);
   services.join(options.service_name, {
-    port: options.listen_port,
-    hostname: options.listen_host
+    port: options.listen_port
   });
 
   server.listen(options.listen_port, options.listen_host, function(err) {
