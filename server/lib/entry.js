@@ -32,6 +32,8 @@ function entry(options) {
   if (options.argv.peers) {
     if (typeof(options.argv.peers) === 'object') {
       options.etcd_hosts = options.argv.peers.join(',');
+    } else {
+      options.etcd_hosts = options.argv.peers;
     }
   }
   if (options.argv['bind-addr']) {
