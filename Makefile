@@ -16,9 +16,10 @@ run-dev:
 	  exit 1 ; \
 	fi
 	node_modules/.bin/nodemon server/bin/virgo-update-service \
-		--peers 127.0.0.1:4001 \
-		--peers 127.0.0.1:4002 \
-		--peers 127.0.0.1:4003 \
+		--peers 192.168.50.4:4001 \
+		--peers 192.168.50.4:4002 \
+		--peers 192.168.50.4:4003 \
+		--bind-addr 127.0.0.1:34000 \
 		-t upgrade-service.htpasswd \
 		-u ${TEST_USERNAME} \
 		-a ${TEST_APIKEY} \

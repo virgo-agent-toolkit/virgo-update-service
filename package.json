@@ -36,7 +36,7 @@
     "nodemon": "1.0.x",
     "bower": "1.2.x",
     "socket.io": "~0.9.16",
-    "etcd-registry": "~0.2.1",
+    "etcd-registry": "~0.3.0",
     "express-jwt": "~0.1.0",
     "jsonwebtoken": "~0.1.0",
     "socketio-jwt": "~2.0.1",

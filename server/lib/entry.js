@@ -56,7 +56,7 @@ function entry(options) {
   api.register(options, server, app);
 
   services = registry(options.etcd_hosts);
-  services.join(options.service_name, { port: options.listen_port });
+  services.join(options.service_name, { hostname: options.listen_host, port: options.listen_port });
 
   server.listen(options.listen_port, options.listen_host, function(err) {
     if (err) {
