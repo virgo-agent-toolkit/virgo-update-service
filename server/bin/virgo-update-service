@@ -14,12 +14,16 @@ var argv = require('optimist')
   .describe('a', 'api key')
   .alias('u', 'username')
   .describe('u', 'username')
+  .alias('s', 'secret')
+  .describe('s', 'secret')
   .argv;
 
 var entry = require('../lib/entry').entry;
 var logger = require('../lib/logger').logger;
+
 var default_options = {
   pkgcloud: { provider: 'rackspace' },
+  secret: '',
   data_dir: '/var/data',
   exe_dir: '/var/deploy',
   service_name: 'virgo-upgrade-service',

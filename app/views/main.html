@@ -12,7 +12,6 @@
           <p><select required class="form-control" data-style="btn-primary" ng-model="deployData.version">
             <option ng-repeat="version in availableVersions.values">{{version}}</option>
           </select></p>
-          <!-- SUBMIT BUTTON -->
           <button ng-disabled="isUnchanged(deployData)" type="submit" class="btn btn-success btn-lg btn-block">
             <span class="glyphicon glyphicon-flash"></span> Deploy
           </button>

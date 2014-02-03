@@ -1,23 +1,11 @@
 var api = require('./api');
 var express = require('express');
 var http = require('http');
-var io = require('socket.io');
 var logger = require('./logger').logger;
 var path = require('path');
 var registry = require('etcd-registry');
 var url = require('url');
 var _ = require('underscore');
-
-function connection(socket) {
-  function go() {
-    socket.emit('line', 'test');
-    setTimeout(go, 1000);
-  }
-  setTimeout(go, 1000);
-  socket.on('disconnect', function () {
-    console.log('Client Disconnected');
-  });
-}
 
 function entry(options) {
   var app = express(),
@@ -48,15 +36,15 @@ function entry(options) {
   if (options.argv.u) {
     options.pkgcloud.username = options.argv.u;
   }
+  if (options.argv.s) {
+    options.secret = options.argv.s;
+  }
 
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.static(path.join(__dirname, '..', '..', 'app')));
   app.use(optionsMiddleware);
-  api.register(app);
-
-  io = io.listen(server);
-  io.sockets.on('connection', connection);
+  api.register(options, server, app);
 
   services = registry(options.etcd_hosts);
   services.join(options.service_name, {

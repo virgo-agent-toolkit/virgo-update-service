@@ -18,7 +18,8 @@ run_dev:
 	node_modules/.bin/nodemon server/bin/virgo-update-service \
 		--peers 127.0.0.1:1024 \
 		-u ${TEST_USERNAME} \
-		-a ${TEST_APIKEY}
+		-a ${TEST_APIKEY} \
+		-s 'secret'
 
 deps:
 	npm install
