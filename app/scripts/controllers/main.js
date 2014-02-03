@@ -12,7 +12,9 @@ upgradeApp.controller('MainController', function($scope, UpgradeService, $locati
   });
 
   UpgradeService.getServiceNodes().success(function(data) {
-    $scope.servers = data;
+    if (data.success) {
+      $scope.servers = data.values;
+    };
   });
 
   $scope.deploy = function() {

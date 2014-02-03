@@ -4,6 +4,7 @@
     "apiKey": "",
     "provider": "rackspace"
   },
+  "htpasswd_file": "",
   "secret": "",
   "data_dir": "",
   "exe_dir": "",

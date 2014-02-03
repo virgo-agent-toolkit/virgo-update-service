@@ -1,11 +1,12 @@
 var api = require('./api');
 var express = require('express');
 var http = require('http');
-var logger = require('./logger').logger;
 var path = require('path');
 var registry = require('etcd-registry');
 var url = require('url');
 var _ = require('underscore');
+
+var log = require('logmagic').local('virgo-upgrade-service.lib.entry');
 
 function entry(options) {
   var app = express(),
@@ -39,6 +40,9 @@ function entry(options) {
   if (options.argv.s) {
     options.secret = options.argv.s;
   }
+  if (options.argv.h) {
+    options.htpasswd_file = options.argv.h;
+  }
 
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
@@ -47,17 +51,15 @@ function entry(options) {
   api.register(options, server, app);
 
   services = registry(options.etcd_hosts);
-  services.join(options.service_name, {
-    port: options.listen_port
-  });
+  services.join(options.service_name, { port: options.listen_port });
 
   server.listen(options.listen_port, options.listen_host, function(err) {
     if (err) {
-      logger.error('error listening', err.message);
+      log.error('error listening', err.message);
       return;
     }
-    logger.info('Using etcd hosts: %s', options.etcd_hosts);
-    logger.info('Listening on %s:%s', options.listen_host, options.listen_port)
+    log.infof('Using etcd hosts: ${hosts}', {hosts: options.etcd_hosts});
+    log.infof('Listening on ${host}:${port}', {host: options.listen_host, port: options.listen_port});
   });
 }
 

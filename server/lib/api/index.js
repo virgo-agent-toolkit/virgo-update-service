@@ -1,5 +1,4 @@
 var pkgcloud = require('pkgcloud');
-var logger = require('../logger');
 var messages = require('./messages');
 var registry = require('etcd-registry');
 var jwt = require('jsonwebtoken');
@@ -8,9 +7,11 @@ var socketioJwt = require('socketio-jwt');
 var io = require('socket.io');
 var _ = require('underscore');
 
+var log = require('logmagic').local('virgo-upgrade-service.lib.api');
+
 function connection(socket) {
   socket.on('disconnect', function () {
-    console.log('Client Disconnected');
+    log.info('Client Disconnected');
   });
 }
 
