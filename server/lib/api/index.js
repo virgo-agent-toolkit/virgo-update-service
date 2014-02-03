@@ -24,7 +24,7 @@ function availableVersions(req, res) {
     results = _.map(containers, function(container) {
       return container.name;
     }).filter(function(name) {
-      return /^[0-9.\-]+$/.test(name);
+      return (/^[0-9.\-]+$/).test(name);
     }).sort().reverse();
     res.json(new messages.Response(results));
   });
@@ -56,11 +56,10 @@ function authenticate(req, res) {
     last_name: 'Doe',
     email: 'john@doe.com',
     id: 123
-  };
+  }, token;
 
   // We are sending the profile inside the token
-  var token = jwt.sign(profile, req.globalOptions.secret, { expiresInMinutes: 60*60 });
-
+  token = jwt.sign(profile, req.globalOptions.secret, { expiresInMinutes: 60*60 });
   res.json({ token: token });
 }
 

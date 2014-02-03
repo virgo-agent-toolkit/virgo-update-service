@@ -27,48 +27,12 @@ var TUPLES = [
   [1, 7, 13],
   [2, 8, 14],
   [3, 9, 15],
-  [4, 10, 5],
+  [4, 10, 5]
 ];
-
-
-function AuthDB(users) {
-  this.users = users;
-}
-
-
-AuthDB.prototype.validate = function(username, password, callback) {
-  if (!this.users[username]) {
-    callback(null, false);
-  } else if (this.users[username].indexOf('{SHA}') === 0) {
-    callback(null, this._validateSHA(password, this.users[username]));
-  } else if (this.users[username].indexOf('$apr1$') === 0) {
-    callback(null, this._validateMD5(password, this.users[username]));
-  } else {
-    callback(null, false);
-  }
-};
-
-
-AuthDB.prototype._validateSHA = function(password, hash) {
-  return sha1crypt(password) === hash;
-};
-
-
-AuthDB.prototype._validateMD5 = function(password, hash) {
-  var all = hash.split('$');
-  return md5crypt(password, all[2], '$apr1$') === hash;
-};
-
-
-AuthDB.prototype.updateUsers = function(users) {
-  this.users = users;
-};
 
 function sha1crypt(password) {
   return '{SHA}' + crypto.createHash('sha1').update(password).digest('base64');
 }
-
-
 
 // Ported to javascript from http://code.activestate.com/recipes/325204-passwd-file-compatible-1-md5-crypt/
 function md5crypt(password, salt, magic) {
@@ -136,6 +100,40 @@ function md5crypt(password, salt, magic) {
 
   return magic + salt + '$' + rearranged;
 }
+
+function AuthDB(users) {
+  this.users = users;
+}
+
+
+AuthDB.prototype.validate = function(username, password, callback) {
+  if (!this.users[username]) {
+    callback(null, false);
+  } else if (this.users[username].indexOf('{SHA}') === 0) {
+    callback(null, this._validateSHA(password, this.users[username]));
+  } else if (this.users[username].indexOf('$apr1$') === 0) {
+    callback(null, this._validateMD5(password, this.users[username]));
+  } else {
+    callback(null, false);
+  }
+};
+
+
+AuthDB.prototype._validateSHA = function(password, hash) {
+  return sha1crypt(password) === hash;
+};
+
+
+AuthDB.prototype._validateMD5 = function(password, hash) {
+  var all = hash.split('$');
+  return md5crypt(password, all[2], '$apr1$') === hash;
+};
+
+
+AuthDB.prototype.updateUsers = function(users) {
+  this.users = users;
+};
+
 
 function getUsers(filePath) {
   var contents = fs.readFileSync(filePath, 'utf-8'),
