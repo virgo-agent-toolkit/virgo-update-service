@@ -6,6 +6,7 @@ upgradeApp.controller('LoginController', function($scope, $http, UpgradeService,
     $http
       .post('/authenticate', $scope.user)
         .success(function(data, status, headers, config) {
+          $scope.message = null;
           $window.sessionStorage.token = data.token;
           $window.sessionStorage.user = $scope.user.username;
           $location.path('/main');
