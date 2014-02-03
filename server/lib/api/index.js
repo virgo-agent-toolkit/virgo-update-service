@@ -21,9 +21,7 @@ function availableVersions(req, res) {
     if (err) {
       return res.json(messages.ErrorResponse(err));
     }
-    results = _.map(containers, function(container) {
-      return container.name;
-    }).filter(function(name) {
+    results = _.pluck(containers, 'name').filter(function(name) {
       return (/^[0-9.\-]+$/).test(name);
     }).sort().reverse();
     res.json(new messages.Response(results));
