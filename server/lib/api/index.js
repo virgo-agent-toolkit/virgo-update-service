@@ -4,6 +4,7 @@ var registry = require('etcd-registry');
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var socketioJwt = require('socketio-jwt');
+var auth= require('../auth');
 var io = require('socket.io');
 var _ = require('underscore');
 
@@ -45,21 +46,26 @@ function deploy(req, res) {
 }
 
 function authenticate(req, res) {
-  if (!(req.body.username === 'john.doe' && req.body.password === 'foobar')) {
-    res.send(401, 'Wrong user or password');
-    return;
-  }
+  var profile;
 
-  var profile = {
-    first_name: 'John',
-    last_name: 'Doe',
-    email: 'john@doe.com',
-    id: 123
-  }, token;
+  req.authDb.validate(req.body.username, req.body.password, function(err, validated) {
+    if (err) {
+      res.send(401, 'Wrong user or password');
+      return;
+    }
+    if (!validated) {
+      res.send(401, 'Wrong user or password');
+      return;
+    }
 
-  // We are sending the profile inside the token
-  token = jwt.sign(profile, req.globalOptions.secret, { expiresInMinutes: 60*60 });
-  res.json({ token: token });
+    // We are sending the profile inside the token
+    profile = {
+      username: req.body.username
+    };
+    token = jwt.sign(profile, req.globalOptions.secret, {});
+    res.json({ token: token });
+  });
+
 }
 
 exports.register = function(options, server, app) {

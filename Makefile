@@ -19,6 +19,7 @@ run-dev:
 		--peers 127.0.0.1:4001 \
 		--peers 127.0.0.1:4002 \
 		--peers 127.0.0.1:4003 \
+		-t upgrade-service.htpasswd \
 		-u ${TEST_USERNAME} \
 		-a ${TEST_APIKEY} \
 		-s 'secret'

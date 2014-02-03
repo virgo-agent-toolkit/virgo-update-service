@@ -4,6 +4,7 @@ var http = require('http');
 var path = require('path');
 var registry = require('etcd-registry');
 var url = require('url');
+var auth = require('./auth');
 var _ = require('underscore');
 
 var log = require('logmagic').local('virgo-upgrade-service.lib.entry');
@@ -11,10 +12,12 @@ var log = require('logmagic').local('virgo-upgrade-service.lib.entry');
 function entry(options) {
   var app = express(),
       server = http.createServer(app),
-      services;
+      services,
+      authDb;
 
   function optionsMiddleware(req, res, next) {
     req.globalOptions = options;
+    req.authDb = authDb;
     next();
   }
 
@@ -40,9 +43,11 @@ function entry(options) {
   if (options.argv.s) {
     options.secret = options.argv.s;
   }
-  if (options.argv.h) {
-    options.htpasswd_file = options.argv.h;
+  if (options.argv.t) {
+    options.htpasswd_file = options.argv.t;
   }
+
+  authDb = auth.loadDBFromFile(options.htpasswd_file);
 
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
