@@ -12,6 +12,7 @@ upgradeApp.controller('LoginController', function($scope, $http, UpgradeService,
           $location.path('/main');
         }).error(function(data) {
           $scope.message = data;
+          $scope.user = {};
           // Erase the token if the user fails to log in
           delete $window.sessionStorage.token;
         });
