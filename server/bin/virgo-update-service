@@ -28,7 +28,7 @@ var default_options = {
   secret: '',
   data_dir: '/var/data',
   exe_dir: '/var/deploy',
-  service_name: 'virgo-upgrade-service',
+  service_name: 'dfw0-upgrade-service',
   listen_host: '127.0.0.1',
   listen_port: 34000
 };
