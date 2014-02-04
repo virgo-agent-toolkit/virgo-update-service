@@ -8,7 +8,12 @@ var upgradeApp = angular.module('upgradeApp', [
 upgradeApp.run(function($location, $window, $rootScope) {
   $rootScope.$on("$routeChangeStart", function(event, next, current) {
     $rootScope.isLoggedIn = $window.sessionStorage.getItem("token") !== null;
-    if (!$rootScope.isLoggedIn) {
+    if (next.templateUrl == 'partials/login.html') {
+      return;
+    }
+    if ($rootScope.isLoggedIn) {
+      $location.path('/main');
+    } else {
       $location.path('/login');
     }
   });
