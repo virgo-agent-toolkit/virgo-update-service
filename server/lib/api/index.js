@@ -46,7 +46,7 @@ function deploy(req, res) {
 }
 
 function authenticate(req, res) {
-  var profile;
+  var profile, token;
 
   req.authDb.validate(req.body.username, req.body.password, function(err, validated) {
     if (err) {
