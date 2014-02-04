@@ -18,6 +18,8 @@ var argv = require('optimist')
   .describe('s', 'secret')
   .alias('t', 'htpasswd')
   .describe('t', 'the htpassword filepath')
+  .alias('n', 'service-name')
+  .describe('n', 'the service name')
   .argv;
 
 var entry = require('../lib/entry').entry;

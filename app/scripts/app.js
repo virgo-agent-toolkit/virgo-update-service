@@ -8,14 +8,12 @@ var upgradeApp = angular.module('upgradeApp', [
 upgradeApp.run(function($location, $window, $rootScope) {
   $rootScope.$on("$routeChangeStart", function(event, next, current) {
     $rootScope.isLoggedIn = $window.sessionStorage.getItem("token") !== null;
-    if (next.templateUrl == 'partials/login.html') {
-      return;
-    }
-    if ($rootScope.isLoggedIn) {
-      $location.path('/main');
-    } else {
+    if (!$rootScope.isLoggedIn) {
+      if (next.templateUrl == 'partials/login.html') {
+        return;
+      }
       $location.path('/login');
-    }
+    } 
   });
   $rootScope.logout = function() {
     delete $window.sessionStorage.token;
@@ -45,7 +43,7 @@ upgradeApp.config(function($routeProvider, $httpProvider) {
   $httpProvider.interceptors.push('authInterceptor');
 
   $routeProvider
-    .when('/main', {
+    .when('/', {
       templateUrl: 'views/main.html',
       controller: 'MainController'
     })
@@ -57,5 +55,8 @@ upgradeApp.config(function($routeProvider, $httpProvider) {
       templateUrl: 'views/deploy.html',
       controller: 'DeployController'
     })
-    .otherwise('/main');
+    .otherwise({
+      redirectTo: '/',
+      controller: 'MainController'
+    });
 });

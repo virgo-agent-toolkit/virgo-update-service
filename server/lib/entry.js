@@ -46,6 +46,9 @@ function entry(options) {
   if (options.argv.t) {
     options.htpasswd_file = options.argv.t;
   }
+  if (options.argv.n) {
+    options.service_name = options.argv.n;
+  }
 
   authDb = auth.loadDBFromFile(options.htpasswd_file);
 
