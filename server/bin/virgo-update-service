@@ -10,6 +10,8 @@ var argv = require('optimist')
   .describe('p', 'etcd peers')
   .alias('b', 'bind-addr')
   .describe('b', 'bind address')
+  .alias('r', 'addr')
+  .describe('r', 'register service as host:port')
   .alias('a', 'api-key')
   .describe('a', 'api key')
   .alias('u', 'username')
@@ -31,8 +33,10 @@ var default_options = {
   data_dir: '/var/data',
   exe_dir: '/var/deploy',
   service_name: 'virgo-upgrade-service',
-  listen_host: '127.0.0.1',
-  listen_port: 34000
+  addr_host: null,
+  addr_port: null,
+  bind_host: '127.0.0.1',
+  bind_port: 34000
 };
 
 var options = {};

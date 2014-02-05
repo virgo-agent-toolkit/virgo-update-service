@@ -13,7 +13,8 @@ function entry(options) {
   var app = express(),
       server = http.createServer(app),
       services,
-      authDb;
+      authDb,
+      l;
 
   function optionsMiddleware(req, res, next) {
     req.globalOptions = options;
@@ -29,10 +30,15 @@ function entry(options) {
       options.etcd_hosts = options.argv.peers;
     }
   }
-  if (options.argv['bind-addr']) {
-    var l = options.argv['bind-addr'].split(':');
-    options.listen_host = l[0];
-    options.listen_port = l[1];
+  if (options.argv.b) {
+    l = options.argv.b.split(':');
+    options.bind_host = l[0];
+    options.bind_port = l[1];
+  }
+  if (options.argv.r) {
+    l = options.argv.r.split(':');
+    options.addr_host = l[0];
+    options.addr_port = l[1];
   }
   if (options.argv.a) {
     options.pkgcloud.apiKey = options.argv.a;
@@ -49,6 +55,12 @@ function entry(options) {
   if (options.argv.n) {
     options.service_name = options.argv.n;
   }
+  if (!options.addr_host) {
+    options.addr_host = options.bind_host;
+  }
+  if (!options.addr_port) {
+    options.addr_port = options.bind_port;
+  }
 
   authDb = auth.loadDBFromFile(options.htpasswd_file);
 
@@ -59,15 +71,18 @@ function entry(options) {
   api.register(options, server, app);
 
   services = registry(options.etcd_hosts);
-  services.join(options.service_name, { hostname: options.listen_host, port: options.listen_port });
+  services.join(options.service_name, {
+    hostname: options.addr_host,
+    port: options.addr_port
+  });
 
-  server.listen(options.listen_port, options.listen_host, function(err) {
+  server.listen(options.bind_port, options.bind_host, function(err) {
     if (err) {
       log.error('error listening', err.message);
       return;
     }
     log.infof('Using etcd hosts: ${hosts}', {hosts: options.etcd_hosts});
-    log.infof('Listening on ${host}:${port}', {host: options.listen_host, port: options.listen_port});
+    log.infof('Listening on ${host}:${port}', {host: options.bind_host, port: options.bind_port});
   });
 }
 
