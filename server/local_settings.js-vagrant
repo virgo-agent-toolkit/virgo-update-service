@@ -4,6 +4,8 @@
     "apiKey": "",
     "provider": "rackspace"
   },
+  "htpasswd_file": "",
+  "secret": "",
   "data_dir": "",
   "exe_dir": "",
   "etcd_hosts": "127.0.0.1:4001",

@@ -5,16 +5,58 @@ var upgradeApp = angular.module('upgradeApp', [
   'upgradeAppServices'
 ]);
 
-upgradeApp.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/', {
-    templateUrl: 'views/main.html',
-    controller: 'MainController'
-  })
-  .when('/deploy', {
-    templateUrl: 'views/deploy.html',
-    controller: 'DeployController'
-  })
-  .otherwise({
-    redirectTo: '/'
+upgradeApp.run(function($location, $window, $rootScope) {
+  $rootScope.$on("$routeChangeStart", function(event, next, current) {
+    $rootScope.isLoggedIn = $window.sessionStorage.getItem("token") !== null;
+    if (!$rootScope.isLoggedIn) {
+      if (next.templateUrl == 'partials/login.html') {
+        return;
+      }
+      $location.path('/login');
+    } 
   });
-}]);
+  $rootScope.logout = function() {
+    delete $window.sessionStorage.token;
+    $location.path('/login');
+  };
+});
+
+upgradeApp.factory('authInterceptor', function($rootScope, $q, $window, $location) {
+  return {
+    request: function (config) {
+      config.headers = config.headers || {};
+      if ($window.sessionStorage.token) {
+        config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
+      }
+      return config;
+    },
+    response: function (response) {
+      if (response.status === 401) {
+        // handle the case where the user is not authenticated
+      }
+      return response || $q.when(response);
+    }
+  };
+});
+
+upgradeApp.config(function($routeProvider, $httpProvider) {
+  $httpProvider.interceptors.push('authInterceptor');
+
+  $routeProvider
+    .when('/', {
+      templateUrl: 'views/main.html',
+      controller: 'MainController'
+    })
+    .when('/login', {
+      templateUrl: 'views/login.html',
+      controller: 'LoginController'
+    })
+    .when('/deploy', {
+      templateUrl: 'views/deploy.html',
+      controller: 'DeployController'
+    })
+    .otherwise({
+      redirectTo: '/',
+      controller: 'MainController'
+    });
+});

@@ -10,21 +10,33 @@ var argv = require('optimist')
   .describe('p', 'etcd peers')
   .alias('b', 'bind-addr')
   .describe('b', 'bind address')
+  .alias('r', 'addr')
+  .describe('r', 'register service as host:port')
   .alias('a', 'api-key')
   .describe('a', 'api key')
   .alias('u', 'username')
   .describe('u', 'username')
+  .alias('s', 'secret')
+  .describe('s', 'secret')
+  .alias('t', 'htpasswd')
+  .describe('t', 'the htpassword filepath')
+  .alias('n', 'service-name')
+  .describe('n', 'the service name')
   .argv;
 
 var entry = require('../lib/entry').entry;
-var logger = require('../lib/logger').logger;
+var log = require('logmagic').local('virgo-upgrade-service');
+
 var default_options = {
   pkgcloud: { provider: 'rackspace' },
+  secret: '',
   data_dir: '/var/data',
   exe_dir: '/var/deploy',
   service_name: 'virgo-upgrade-service',
-  listen_host: '127.0.0.1',
-  listen_port: 34000
+  addr_host: null,
+  addr_port: null,
+  bind_host: '127.0.0.1',
+  bind_port: 34000
 };
 
 var options = {};
@@ -32,7 +44,7 @@ if (argv.c) {
   try {
     options = JSON.parse(fs.readFileSync(argv.c));
   } catch (err) {
-    logger.error('Error parsing config.', {error: err});
+    log.error('Error parsing config.', {err: err});
     process.exit(1);
   }
 }

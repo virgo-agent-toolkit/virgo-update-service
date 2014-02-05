@@ -4,7 +4,7 @@
   "description": "Updater Service for Virgo Services",
   "main": "index.js",
   "scripts": {
-    "run-dev": "./node_modules/.bin/nodemon bin/virgo-update-service -c config.json.settings-vagrant",
+    "run-dev": "make run-dev",
     "test": "make test",
     "lint": "make lint"
   },
@@ -33,10 +33,13 @@
     "pkgcloud": "0.8.x",
     "optimist": "0.6.x",
     "underscore": "~1.4.4",
-    "winston": "0.7.x",
     "nodemon": "1.0.x",
     "bower": "1.2.x",
     "socket.io": "~0.9.16",
-    "etcd-registry": "~0.2.1"
+    "etcd-registry": "~0.3.0",
+    "express-jwt": "~0.1.0",
+    "jsonwebtoken": "~0.1.0",
+    "socketio-jwt": "~2.0.1",
+    "logmagic": "~0.1.4"
   }
 }
