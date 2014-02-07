@@ -3,16 +3,18 @@
     <div class="row">
       <div class="col-md-4">
         <div class="panel panel-default">
-          <div class="panel-heading">Deploy</div>
+          <div class="panel-heading">
+            <h3 class="panel-title">
+              Deploy
+            </h3>
+          </div>
           <div class="panel-body">
             <form novalidate ng-submit="deploy()">
               <p><select required class="form-control" data-style="btn-primary" ng-model="deployData.channel">
-                <option selected>master</option>
-                <option>unstable</option>
-                <option>stable</option>
+                <option ng-repeat="channel in channels">{{channel}}</option>
               </select></p>
               <p><select required class="form-control" data-style="btn-primary" ng-model="deployData.version">
-                <option ng-repeat="version in availableVersions.values">{{version}}</option>
+                <option ng-repeat="version in remote_versions">{{version}}</option>
               </select></p>
               <button ng-disabled="isUnchanged(deployData)" type="submit" class="btn btn-success btn-lg btn-block">
                 <span class="glyphicon glyphicon-flash"></span> Deploy
@@ -22,11 +24,44 @@
         </div>
       </div>
       <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">
+              Channel Versions
+            </h3>
+          </div>
+          <div class="panel-body">
+            <ul class="list-group">
+              <li class="list-group-item" ng-repeat="(channel, version) in channel_versions">
+                {{channel}} : {{version}}
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
       <div class="col-md-4">
         <div class="panel panel-default">
-          <!-- Default panel contents -->
-          <div class="panel-heading">Cluster</div>
+          <div class="panel-heading">
+            <h3 class="panel-title">
+              Versions on this instance
+            </h3>
+          </div>
+          <div class="panel-body">
+            <ul class="list-group">
+              <li class="list-group-item" ng-repeat="version in local_versions">
+                {{version}}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">
+              Cluster
+            </h3>
+          </div>
           <div class="panel-body">
             <ul class="list-group">
               <li class="list-group-item list-group-item-success" ng-repeat="server in servers">

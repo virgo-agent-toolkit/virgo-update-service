@@ -4,8 +4,17 @@ module.factory('UpgradeService', function($http) {
     getServiceNodes: function() {
       return $http.get('/v1/nodes');
     },
-    getAvailableVersions: function() {
-      return $http.get('/v1/available_versions');
+    getAvailableRemoteVersions: function() {
+      return $http.get('/v1/versions/remote');
+    },
+    getAvailableLocalVersions: function() {
+      return $http.get('/v1/versions/local');
+    },
+    getAvailableChannelVersions: function() {
+      return $http.get('/v1/versions/channel');
+    },
+    getAvailableChannels: function() {
+      return $http.get('/v1/channels');
     },
     deploy: function(deployData) {
       return $http.post('/v1/deploy', deployData);

@@ -2,7 +2,7 @@
 
 var fs = require('fs');
 var _ = require('underscore');
-var argv = require('optimist')
+var argv = require('yargs')
   .usage('virgo-update-service')
   .alias('c', 'config')
   .describe('c', 'load config')
@@ -30,8 +30,8 @@ var log = require('logmagic').local('virgo-upgrade-service');
 var default_options = {
   pkgcloud: { provider: 'rackspace' },
   secret: '',
-  data_dir: '/var/data',
-  exe_dir: '/var/deploy',
+  data_dir: '/tmp/data',
+  exe_dir: '/tmp/deploy',
   service_name: 'virgo-upgrade-service',
   addr_host: null,
   addr_port: null,
