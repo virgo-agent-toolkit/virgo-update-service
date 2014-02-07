@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" ng-app="upgradeApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Virgo Upgrade Service</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap-theme.css">
+    <link rel="stylesheet" href="stylesheets/style.css">
+
+    <script src="components/jquery/jquery.js"></script>
+    <script src="components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="components/angular/angular.js"></script>
+    <script src="components/angular-route/angular-route.js"></script>
+    <script src="components/socket.io-client/dist/socket.io.js"></script>
+    <script src="components/angular-socket-io/socket.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/controllers/login.js"></script>
+    <script src="scripts/controllers/deploy.js"></script>
+    <script src="scripts/services/upgrade.js"></script>
+    <script src="scripts/services/websocket.js"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/#/main">Virgo Upgrade Service</a>
+      </div>
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li ng-show="isLoggedIn"><a ng-click="logout()">Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div>
+      <div ng-view></div>
+    </div>
+  </body>
+
+</html>

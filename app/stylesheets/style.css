@@ -1,0 +1,47 @@
+html, body {
+  background-color: #eee;
+}
+
+.deployment_log { overflow: auto; height: 620px; background: #000; color: #fff; padding: 10px;  }
+.deployment_log p { background: #000; border: none; padding: .2em; margin: 0;  }
+.deployment_log p.error { color: #f00;  }
+.deployment_log p.success { color: #0f0;  }
+
+.deployment_log div { margin-bottom: .5em; display: none;  }
+.deployment_log table { margin: 0;  }
+.deployment_log td.key { width: 200px;  }
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  font-size: 16px;
+  height: auto;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}

@@ -4,7 +4,9 @@
   "description": "Updater Service for Virgo Services",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "run-dev": "make run-dev",
+    "test": "make test",
+    "lint": "make lint"
   },
   "repository": {
     "type": "git",
@@ -16,24 +18,29 @@
     "url": "https://github.com/virgo-agent-toolkit/virgo-update-service/issues"
   },
   "homepage": "https://github.com/virgo-agent-toolkit/virgo-update-service",
-  "scripts": {
-    "test": "make test",
-    "lint": "make lint"
-  },
   "devDependencies": {
     "mocha": "1.17.x",
     "should": "3.0.x",
-    "jscoverage": "0.3.8"
+    "jscoverage": "0.3.x",
+    "nodemon": "1.0.x"
   },
   "dependencies": {
     "async": "0.2.8",
+    "node-etcd": "2.0.x",
     "express": "3.4.x",
     "mkdirp": "0.3.x",
     "nodelint": "0.6.2",
     "supervisor": "~0.5.6",
     "pkgcloud": "0.8.x",
     "optimist": "0.6.x",
-    "underscore": "1.4.x",
-    "winston": "0.7.x"
+    "underscore": "~1.4.4",
+    "nodemon": "1.0.x",
+    "bower": "1.2.x",
+    "socket.io": "~0.9.16",
+    "etcd-registry": "~0.3.0",
+    "express-jwt": "~0.1.0",
+    "jsonwebtoken": "~0.1.0",
+    "socketio-jwt": "~2.0.1",
+    "logmagic": "~0.1.4"
   }
 }
