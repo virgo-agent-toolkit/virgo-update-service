@@ -1,10 +1,11 @@
 REPORTER = spec
 MOCHA_FLAGS = -t 5000 -s 500
+MOCHA_CMDLINE = ./node_modules/.bin/mocha --reporter $(REPORTER) $(MOCHA_FLAGS)
 
 all: lint test
 
 lint:
-	node_modules/.bin/nodelint --config .jslint.conf server/lib/**/*.js server/bin/*
+	./node_modules/.bin/nodelint --config .jslint.conf server/lib/**/*.js server/bin/*
 
 run-dev:
 	@if [ -z "${TEST_USERNAME}" ] ; then \
@@ -15,7 +16,8 @@ run-dev:
 	  echo Environment variable TEST_APIKEY is required. ; \
 	  exit 1 ; \
 	fi
-	node_modules/.bin/nodemon server/bin/virgo-update-service \
+	./node_modules/.bin/nodemon \
+	  server/bin/virgo-update-service \
 		--peers 192.168.50.4:4001 \
 		--peers 192.168.50.4:4002 \
 		--peers 192.168.50.4:4003 \
@@ -27,14 +29,21 @@ run-dev:
 
 deps:
 	npm install
-	node_modules/.bin/bower install --allow-root
+	./node_modules/.bin/bower install --allow-root
 
 autotest:
-	node_modules/.bin/supervisor -q -n exit -x ./node_modules/.bin/mocha \
-		-- -b
+	@NODE_ENV=test ./node_modules/.bin/mocha \
+		--reporter $(REPORTER) \
+		--growl \
+		--watch
+
+test:
+	@NODE_ENV=test ./node_modules/.bin/mocha \
+		--reporter $(REPORTER) \
+		--growl \
+		--watch
 
 test: lint
-	@NODE_ENV=mocha ./node_modules/.bin/mocha \
-		--reporter $(REPORTER) $(MOCHA_FLAGS)
+	$(MOCHA_CMDLINE)
 
 .PHONY: test all lint
