@@ -64,16 +64,31 @@ function _currentDeploys(req, res) {
 }
 
 function _availableRemoteVersions(req, res) {
-  var client = pkgcloud.storage.createClient(req.globalOptions.pkgcloud),
-      results;
-  client.getContainers(function(err, containers) {
+  var cl = new etcd.Client(),
+      cacheKey = '/cache/remoteVersions';
+
+  function work(callback) {
+    var client = pkgcloud.storage.createClient(req.globalOptions.pkgcloud);
+    client.getContainers(function(err, containers) {
+      if (err) {
+        callback(err);
+        return;
+      }
+      var results = _.pluck(containers, 'name')
+        .filter(function(name) {
+          return (/^[0-9.\-]+$/).test(name);
+        })
+        .sort()
+        .reverse();
+      callback(null, results);
+    });
+  }
+
+  cl.cache(cacheKey, 5 * 60, work, function(err, results) {
     if (err) {
-      return res.json(messages.ErrorResponse(err));
+      res.json(messages.ErrorResponse(err));
+      return;
     }
-    results = _.pluck(containers, 'name')
-    .filter(function(name) {
-      return (/^[0-9.\-]+$/).test(name);
-    }).sort().reverse();
     res.json(new messages.Response(results));
   });
 }
