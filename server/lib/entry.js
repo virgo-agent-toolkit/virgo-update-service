@@ -82,6 +82,7 @@ function entry(options) {
   app.use(express.bodyParser());
   app.use(express.static(path.join(__dirname, '..', '..', 'app')));
   app.use('/exe', express.directory(options.exe_dir));
+  app.use('/exe', express.static(options.exe_dir));
   app.use(optionsMiddleware);
   api.register(options, server, app);
 
