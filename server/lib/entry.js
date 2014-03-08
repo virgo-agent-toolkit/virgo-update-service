@@ -114,17 +114,12 @@ function entry(options) {
       });
     }],
     listen: ['register', function(callback) {
-      server.listen(options.bind_port, options.bind_host, function(err) {
-        if (err) {
-          log.error('error listening', err.message);
-          callback(err);
-          return;
-        }
-        log.infof('Using etcd hosts: ${hosts}', {hosts: options.etcd_hosts});
-        log.infof('Listening on ${host}:${port}', {host: options.bind_host, port: options.bind_port});
-
-        de.run(callback);
-      });
+      server.listen(options.bind_port, options.bind_host, callback);
+    }],
+    deploy: ['listen', function(callback) {
+      log.infof('Using etcd hosts: ${hosts}', {hosts: options.etcd_hosts});
+      log.infof('Listening on ${host}:${port}', {host: options.bind_host, port: options.bind_port});
+      de.run(callback);
     }]
   });
 }
