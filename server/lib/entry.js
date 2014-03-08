@@ -1,19 +1,33 @@
 var api = require('./api');
+var async = require('async');
+var auth = require('./auth');
+var deploy = require('./deploy');
+var etcd = require('./etcd');
 var express = require('express');
 var http = require('http');
+var mkdirp = require('mkdirp');
 var path = require('path');
 var registry = require('etcd-registry');
 var url = require('url');
-var auth = require('./auth');
 var _ = require('underscore');
+
 
 var log = require('logmagic').local('virgo-upgrade-service.lib.entry');
 
+var logmagic = require('logmagic');
+logmagic.route('__root__', logmagic['DEBUG'], 'console');
+
+
+/**
+ * @param options
+ * @return 
+ */
 function entry(options) {
   var app = express(),
       server = http.createServer(app),
       services,
       authDb,
+      de,
       l;
 
   function optionsMiddleware(req, res, next) {
@@ -70,19 +84,46 @@ function entry(options) {
   app.use(optionsMiddleware);
   api.register(options, server, app);
 
-  services = registry(options.etcd_hosts);
-  services.join(options.service_name, {
-    hostname: options.addr_host,
-    port: options.addr_port
-  });
+  de = new deploy.Deploy(options);
+  options.deploy_instance = de;
 
-  server.listen(options.bind_port, options.bind_host, function(err) {
-    if (err) {
-      log.error('error listening', err.message);
-      return;
-    }
-    log.infof('Using etcd hosts: ${hosts}', {hosts: options.etcd_hosts});
-    log.infof('Listening on ${host}:${port}', {host: options.bind_host, port: options.bind_port});
+  async.auto({
+    makedirs: function(callback) {
+      function iter(dir, callback) {
+        mkdirp(dir, function() {
+          callback();
+        })
+      }
+      async.forEach([options.data_dir, options.exe_dir], iter, callback);
+    },
+    register: ['makedirs', function(callback) {
+      var services, et, etcd_hosts = options.etcd_hosts.replace(/.*?:\/\//g, ""),
+
+      services = registry(etcd_hosts);
+      services.join(options.service_name, {
+        hostname: options.addr_host,
+        port: options.addr_port
+      });
+
+      et = new etcd.Client({urls: options.etcd_hosts});
+      et.refresh();
+      et.once('machines', function() {
+        callback();
+      });
+    }],
+    listen: ['register', function(callback) {
+      server.listen(options.bind_port, options.bind_host, function(err) {
+        if (err) {
+          log.error('error listening', err.message);
+          callback(err);
+          return;
+        }
+        log.infof('Using etcd hosts: ${hosts}', {hosts: options.etcd_hosts});
+        log.infof('Listening on ${host}:${port}', {host: options.bind_host, port: options.bind_port});
+
+        de.run(callback);
+      });
+    }]
   });
 }
 

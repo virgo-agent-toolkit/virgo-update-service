@@ -7,8 +7,20 @@ upgradeApp.controller('MainController', function($scope, UpgradeService, $locati
     return data.version === undefined || data.channel === undefined;
   };
 
-  UpgradeService.getAvailableVersions().success(function(msg) {
-    $scope.availableVersions = msg;
+  UpgradeService.getAvailableRemoteVersions().success(function(versions) {
+    $scope.remote_versions = versions.values;
+  });
+
+  UpgradeService.getAvailableLocalVersions().success(function(versions) {
+    $scope.local_versions = versions.values;
+  });
+
+  UpgradeService.getAvailableChannelVersions().success(function(versions) {
+    $scope.channel_versions = versions.values;
+  });
+
+  UpgradeService.getAvailableChannels().success(function(channels) {
+    $scope.channels = channels.values;
   });
 
   UpgradeService.getServiceNodes().success(function(data) {
