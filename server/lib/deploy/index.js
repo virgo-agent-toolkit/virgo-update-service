@@ -233,6 +233,12 @@ Deploy.prototype.getChannels = function(callback) {
 };
 
 
+Deploy.prototype.ensureChannelVersionsDownloaded = function(callback) {
+  var unique_versions = _.uniq(_.flatten(_.map(this._channels_versions, _.values)));
+  async.eachLimit(unique_versions, 5, this._download.bind(this), callback);
+};
+
+
 Deploy.prototype.run = function(callback) {
   var self = this,
       global = new Global();
@@ -247,8 +253,7 @@ Deploy.prototype.run = function(callback) {
       self.getVersionsForChannels(callback);
     }],
     check_local_exe_dir: ['check_for_deploys', function(callback, results) {
-      var unique_versions = _.uniq(_.flatten(_.map(results.check_for_deploys, _.values)));
-      async.eachLimit(unique_versions, 5, self._download.bind(self));
+      self.ensureChannelVersionsDownloaded();
       callback();
     }]
   }, callback);
