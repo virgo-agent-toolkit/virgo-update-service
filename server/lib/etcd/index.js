@@ -313,7 +313,7 @@ Client.prototype.renewLock = function(key, ttl, index, callback) {
 
 
 /**
- * setKey
+ * set
  *
  * @param key
  * @param payload
@@ -338,9 +338,66 @@ Client.prototype.set = function(key, payload, callback) {
  */
 Client.prototype.get = function(key, index, callback) {
   var opts = { json: true };
+  if (typeof(index) === 'function') {
+    callback = index;
+    index = 0;
+  }
   this._request('/v2/keys' + key, opts, callback);
 };
 
+
+
+/**
+ * cache
+ *
+ * @param key
+ * @param ttl
+ * @param work
+ * @param callback
+ * @return
+ */
+Client.prototype.cache = function(key, ttl, work, callback) {
+  var self = this;
+
+  self.get(key, function(err, resp) {
+    if (err) {
+      callback(err);
+      return;
+    }
+    if (resp) {
+      var args;
+      try {
+        args = JSON.parse(resp.node.value);
+      } catch (try_err) {
+        callback(try_err);
+        return;
+      }
+      callback.apply(null, args);
+    } else {
+      work(function() {
+        var args = Array.prototype.slice.call(arguments, 0),
+            values;
+        if (args[0]) {
+          callback(args[0]);
+        } else {
+          try {
+            values = JSON.stringify(args);
+          } catch (try_err) {
+            callback(try_err);
+            return;
+          }
+          self.set(key, {ttl: ttl, value: values}, function(err) {
+            if (err) {
+              callback(err);
+              return;
+            }
+            callback.apply(null, args);
+          });
+        }
+      });
+    }
+  });
+};
 
 
 /**
