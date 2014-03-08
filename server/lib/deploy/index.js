@@ -84,12 +84,12 @@ Deploy.prototype._deregister = function(channel, callback) {
  * @param callback
  * @return
  */
-Deploy.prototype._download = function(channel, version, callback) {
-  log.info('Downloading', { channel: channel, version: version });
+Deploy.prototype._download = function(version, callback) {
+  log.info('Downloading', { version: version });
   callback = _.once(callback);
-  var d = download.bucket(this.options, version);
-  d.on('error', callback);
-  d.on('end', callback);
+  var d = download.bucket(this.options, version)
+    .on('error', callback)
+    .on('end', callback);
 };
 
 
@@ -115,7 +115,7 @@ Deploy.prototype._onDeployEvent = function(response, watch) {
 
   async.auto({
     'register': self._register.bind(self, channel),
-    'download': ['register', self._download.bind(self, channel, values.version)],
+    'download': ['register', self._download.bind(self, values.version)],
     'deregister': ['download', self._deregister.bind(self, channel)]
   }, function(err) {
     if (err) {
@@ -245,6 +245,11 @@ Deploy.prototype.run = function(callback) {
     },
     check_for_deploys: ['channels', 'watchers', function(callback) {
       self.getVersionsForChannels(callback);
+    }],
+    check_local_exe_dir: ['check_for_deploys', function(callback, results) {
+      var unique_versions = _.uniq(_.flatten(_.map(results.check_for_deploys, _.values)));
+      async.eachLimit(unique_versions, 5, self._download.bind(self));
+      callback();
     }]
   }, callback);
 };
