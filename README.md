@@ -18,3 +18,8 @@ The service shall provide the following features:
       4. profit
   * On upgrade, trigger a webhook with payload information of the upgrade
     1. Timestamp, channel and version number for traceability
+
+## Screenshots
+
+![](https://raw.github.com/virgo-agent-toolkit/virgo-update-service/e23675dbc7960b019e92c546579fb27dea4b714b/screenshots/screenshot1.png)
+![](https://raw.github.com/virgo-agent-toolkit/virgo-update-service/e23675dbc7960b019e92c546579fb27dea4b714b/screenshots/screenshot2.png)
