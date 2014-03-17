@@ -86,10 +86,10 @@ function _availableRemoteVersions(req, res) {
 
   cl.cache(cacheKey, 5 * 60, work, function(err, results) {
     if (err) {
-      res.json(messages.ErrorResponse(err));
-      return;
+      res.json(new messages.ErrorResponse(err));
+    } else {
+      res.json(new messages.Response(results));
     }
-    res.json(new messages.Response(results));
   });
 }
 
@@ -99,18 +99,32 @@ function _nodes(req, res) {
 
   reg.list(req.globalOptions.service_name, function(err, s) {
     if (err) {
-      return res.json(messages.ErrorResponse(err));
+      res.json(new messages.ErrorResponse(err));
+    } else {
+      res.json(new messages.Response(s));
     }
-    res.json(new messages.Response(s));
   });
 }
 
 function _deploy(req, res) {
   var cl = new etcd.Client(),
-      key = '/deploys/' + req.body.channel,
-      payload = { value: JSON.stringify({ version: req.body.version }) };
+      key,
+      payload,
+      de = req.globalOptions.deploy_instance;
+
+  if (req.body.newChannelName) {
+    req.body.channel = req.body.newChannelName;
+    de._startWatcher(req.body.channel);
+  }
+  
+  key = '/deploys/' + req.body.channel;
+  payload = { value: JSON.stringify({ version: req.body.version }) };
   cl.set(key, payload, function(err) {
-    res.json({});
+    if (err) {
+      res.json(new messages.ErrorResponse(err));
+    } else {
+      res.json(new messages.Response());
+    }
   });
 }
 
@@ -158,6 +172,18 @@ function _availableChannels(req, res) {
 }
 
 
+function _deployStatus(req, res) {
+  var de = req.globalOptions.deploy_instance;
+  de.getDeployStatus(function(err, stats) {
+    if (err) {
+      res.json(new messages.ErrorResponse(err));
+    } else {
+      res.json(new messages.Response(stats));
+    }
+  });
+};
+
+
 exports.register = function(options, server, app) {
   var PREFIX = '/v1';
 
@@ -180,5 +206,6 @@ exports.register = function(options, server, app) {
   app.get(PREFIX + '/channels', _availableChannels);
   app.get(PREFIX + '/nodes', _nodes);
   app.post(PREFIX + '/deploy', _deploy);
+  app.get(PREFIX + '/deploy/status', _deployStatus);
 };
 

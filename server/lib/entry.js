@@ -113,13 +113,13 @@ function entry(options) {
         callback();
       });
     }],
-    listen: ['register', function(callback) {
-      server.listen(options.bind_port, options.bind_host, callback);
-    }],
-    deploy: ['listen', function(callback) {
+    deploy: ['register', function(callback) {
       log.infof('Using etcd hosts: ${hosts}', {hosts: options.etcd_hosts});
       log.infof('Listening on ${host}:${port}', {host: options.bind_host, port: options.bind_port});
       de.run(callback);
+    }],
+    listen: ['deploy', function(callback) {
+      server.listen(options.bind_port, options.bind_host, callback);
     }]
   });
 }

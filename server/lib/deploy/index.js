@@ -12,13 +12,10 @@ var Global = require('../deploy/global').Global;
 
 var log = require('logmagic').local('virgo-upgrade-service.lib.deploy');
 
-var DEFAULT_CHANNELS = [
-  'stable',
-  'unstable',
-  'master'
-];
-
 var DEFAULT_DEPLOYS_KEY = '/deploys/%(channel)s';
+
+var CURRENT_DEPLOYS = {};
+var CURRENT_DOWNLOADS = {};
 
 /**
  * Deploy
@@ -29,9 +26,8 @@ var DEFAULT_DEPLOYS_KEY = '/deploys/%(channel)s';
  */
 function Deploy(options) {
   EventEmitter.call(this);
-  this.watchers = [];
+  this.watchers = {};
   this.options = options;
-  this.deploys = {};
   this._channels = null;
   this._channels_versions = {};
 }
@@ -56,9 +52,9 @@ Deploy.prototype._generateDeployKey = function(channel) {
  * @param callback
  * @return
  */
-Deploy.prototype._register = function(channel, callback) {
+Deploy.prototype._register = function(channel, version, callback) {
   log.info('Registering Deploy', { channel: channel });
-  this.deploys[channel] = true;
+  CURRENT_DEPLOYS[channel] = { version: version, channel: channel };
   process.nextTick(callback);
 };
 
@@ -71,7 +67,7 @@ Deploy.prototype._register = function(channel, callback) {
  */
 Deploy.prototype._deregister = function(channel, callback) {
   log.info('Deregistering Deploy', { channel: channel });
-  delete this.deploys[channel];
+  delete CURRENT_DEPLOYS[channel];
   process.nextTick(callback);
 };
 
@@ -87,9 +83,16 @@ Deploy.prototype._deregister = function(channel, callback) {
 Deploy.prototype._download = function(version, callback) {
   log.info('Downloading', { version: version });
   callback = _.once(callback);
-  var d = download.bucket(this.options, version)
-    .on('error', callback)
-    .on('end', callback);
+  var d = download.bucket(this.options, version);
+  CURRENT_DOWNLOADS[version] = true;
+  d.on('error', function(err) {
+    delete CURRENT_DOWNLOADS[version];
+    callback(err);
+  });
+  d.on('end', function() {
+    delete CURRENT_DOWNLOADS[version];
+    callback();
+  });
 };
 
 
@@ -114,7 +117,7 @@ Deploy.prototype._onDeployEvent = function(response, watch) {
   log.info('Starting Deploy', { channel: channel, version: values.version });
 
   async.auto({
-    'register': self._register.bind(self, channel),
+    'register': self._register.bind(self, channel, values.version),
     'download': ['register', self._download.bind(self, values.version)],
     'deregister': ['download', self._deregister.bind(self, channel)]
   }, function(err) {
@@ -129,6 +132,21 @@ Deploy.prototype._onDeployEvent = function(response, watch) {
 };
 
 
+Deploy.prototype._startWatcher = function(channel) {
+  var key = this._generateDeployKey(channel),
+      client = new etcd.Client(),
+      watch;
+
+  if (this.watchers[key]) {
+    return;
+  }
+
+  watch = client.watch(key, 0, false);
+  watch.on('event', _.bind(this._onDeployEvent, this));
+  this.watchers[key] = watch.run();
+};
+
+
 /**
  * _startWatchers
  *
@@ -137,14 +155,7 @@ Deploy.prototype._onDeployEvent = function(response, watch) {
  */
 Deploy.prototype._startWatchers = function(callback) {
   log.info('Starting Watchers');
-  var self = this;
-  _.each(DEFAULT_CHANNELS, function(channel) {
-    var key = self._generateDeployKey(channel),
-        client = new etcd.Client(),
-        watch = client.watch(key, 0, false);
-    watch.on('event', _.bind(self._onDeployEvent, self));
-    self.watchers.push(watch.run());
-  });
+  _.each(this._channels, _.bind(this._startWatcher, this));
   process.nextTick(callback);
 };
 
@@ -228,35 +239,41 @@ Deploy.prototype.getLatestChannelsVersion = function(callback) {
 };
 
 
-Deploy.prototype.getChannels = function(callback) {
-  new Global().getChannels(callback);
-};
-
-
 Deploy.prototype.ensureChannelVersionsDownloaded = function(callback) {
   var unique_versions = _.uniq(_.flatten(_.map(this._channels_versions, _.values)));
-  async.eachLimit(unique_versions, 5, this._download.bind(this), callback);
+  async.eachLimit(unique_versions, 5, this._download.bind(this), function(err) {
+    if (!err) {
+      log.info('All channels downloaded and ready');
+    }
+    callback(err);
+  });;
 };
 
 
 Deploy.prototype.run = function(callback) {
-  var self = this,
-      global = new Global();
+  var self = this;
   async.auto({
-    watchers: function(callback) {
-      self._startWatchers(callback);
-    },
     channels: function(callback) {
       self.getChannels(callback);
     },
+    watchers: ['channels', function(callback) {
+      self._startWatchers(callback);
+    }],
     check_for_deploys: ['channels', 'watchers', function(callback) {
       self.getVersionsForChannels(callback);
     }],
     check_local_exe_dir: ['check_for_deploys', function(callback, results) {
-      self.ensureChannelVersionsDownloaded();
-      callback();
+      self.ensureChannelVersionsDownloaded(callback);
     }]
   }, callback);
+};
+
+
+Deploy.prototype.getDeployStatus = function(callback) {
+  var stats = {};
+  stats.current_downloads = _.keys(CURRENT_DOWNLOADS);
+  stats.current_deploys = CURRENT_DEPLOYS;
+  callback(null, stats);
 };
 
 
