@@ -246,7 +246,7 @@ Deploy.prototype.ensureChannelVersionsDownloaded = function(callback) {
       log.info('All channels downloaded and ready');
     }
     callback(err);
-  });;
+  });
 };
 
 

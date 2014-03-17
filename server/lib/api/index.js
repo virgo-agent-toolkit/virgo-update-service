@@ -181,7 +181,7 @@ function _deployStatus(req, res) {
       res.json(new messages.Response(stats));
     }
   });
-};
+}
 
 
 exports.register = function(options, server, app) {
