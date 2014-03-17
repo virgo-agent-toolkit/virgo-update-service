@@ -16,6 +16,9 @@ module.factory('UpgradeService', function($http) {
     getAvailableChannels: function() {
       return $http.get('/v1/channels');
     },
+    getDeployStatus: function() {
+      return $http.get('/v1/deploy/status');
+    },
     deploy: function(deployData) {
       return $http.post('/v1/deploy', deployData);
     }

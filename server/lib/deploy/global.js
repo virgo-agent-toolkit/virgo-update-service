@@ -26,6 +26,10 @@ Global.prototype.getChannels = function(callback) {
       callback(err);
       return;
     }
+    if (!resp) {
+      callback(null, []);
+      return;
+    }
     channels = _.map(resp.node.nodes, function(node) {
       return path.basename(node.key);
     });
