@@ -241,6 +241,10 @@ Deploy.prototype.getLatestChannelsVersion = function(callback) {
 
 Deploy.prototype.ensureChannelVersionsDownloaded = function(callback) {
   var unique_versions = _.uniq(_.flatten(_.map(this._channels_versions, _.values)));
+  log.info('Verifying local channel downloads:');
+  _.each(unique_versions, function(version) {
+    log.infof(' ' + version);
+  });
   async.eachLimit(unique_versions, 5, this._download.bind(this), function(err) {
     if (!err) {
       log.info('All channels downloaded and ready');
@@ -259,7 +263,7 @@ Deploy.prototype.run = function(callback) {
     watchers: ['channels', function(callback) {
       self._startWatchers(callback);
     }],
-    check_for_deploys: ['channels', 'watchers', function(callback) {
+    check_for_deploys: ['channels', 'watchers', function(callback, results) {
       self.getVersionsForChannels(callback);
     }],
     check_local_exe_dir: ['check_for_deploys', function(callback, results) {

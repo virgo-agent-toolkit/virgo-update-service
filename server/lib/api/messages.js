@@ -24,9 +24,7 @@ function ErrorResponse(err)
 {
   ErrorResponse.super_.call(this);
   this.error = true;
-  this.values = {
-    message: err.message
-  };
+  this.values = { message: err.message };
 }
 util.inherits(ErrorResponse, Message);
 

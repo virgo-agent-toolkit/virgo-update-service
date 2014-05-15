@@ -155,6 +155,13 @@ function _availableChannelVersions(req, res) {
     if (err) {
       res.json(new messages.ErrorResponse(err));
     } else {
+      if (req.params.name) {
+        versions = _.pick(versions, req.params.name);
+      }
+      if (_.keys(versions).length === 0) {
+        res.json(new messages.ErrorResponse(new Error('no such channel')));
+        return;
+      }
       res.json(new messages.Response(versions));
     }
   });
@@ -199,12 +206,13 @@ exports.register = function(options, server, app) {
 
   // v1
   app.post('/authenticate', _authenticate);
-  app.use(PREFIX, expressJwt({secret: options.secret}));
+  app.get(PREFIX + '/versions/channel/:name', _availableChannelVersions);
   app.get(PREFIX + '/versions/channel', _availableChannelVersions);
   app.get(PREFIX + '/versions/remote', _availableRemoteVersions);
   app.get(PREFIX + '/versions/local', _availableLocalVersions);
   app.get(PREFIX + '/channels', _availableChannels);
   app.get(PREFIX + '/nodes', _nodes);
+  app.use(PREFIX + '/deploy', expressJwt({secret: options.secret}));
   app.post(PREFIX + '/deploy', _deploy);
   app.get(PREFIX + '/deploy/status', _deployStatus);
 };
