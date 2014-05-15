@@ -212,8 +212,7 @@ exports.register = function(options, server, app) {
   app.get(PREFIX + '/versions/local', _availableLocalVersions);
   app.get(PREFIX + '/channels', _availableChannels);
   app.get(PREFIX + '/nodes', _nodes);
-  app.use(PREFIX + '/deploy', expressJwt({secret: options.secret}));
-  app.post(PREFIX + '/deploy', _deploy);
+  app.post(PREFIX + '/deploy', expressJwt({secret: options.secret}), _deploy);
   app.get(PREFIX + '/deploy/status', _deployStatus);
 };
 
