@@ -1,12 +1,18 @@
 {
   "name": "virgo-update-service",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Updater Service for Virgo Services",
   "main": "index.js",
   "scripts": {
     "run-dev": "make run-dev",
     "test": "make test",
     "lint": "make lint"
+  },
+  "bin": {
+    "virgo-update-service": "./server/bin/virgo-update-service"
+  },
+  "main": {
+    "lib": "./server/lib"
   },
   "repository": {
     "type": "git",
