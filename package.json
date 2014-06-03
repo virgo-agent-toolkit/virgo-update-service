@@ -1,6 +1,6 @@
 {
   "name": "virgo-update-service",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Updater Service for Virgo Services",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,7 @@
     "url": "git://github.com/virgo-agent-toolkit/virgo-update-service.git"
   },
   "scripts": {
-    "install": "bower --allow-root install"
+    "preinstall": "bower --allow-root install"
   },
   "author": "Ryan Phillips <ryan.phillips@rackspace.com>",
   "license": "APACHE-2",
