@@ -134,16 +134,16 @@ Deploy.prototype._onDeployEvent = function(response, watch) {
 
 Deploy.prototype._startWatcher = function(channel) {
   var key = this._generateDeployKey(channel),
-      client = new etcd.Client(),
+      client = new etcd.Client(this.options.etcd_host, this.options.etcd_port),
       watch;
 
   if (this.watchers[key]) {
     return;
   }
 
-  watch = client.watch(key, 0, false);
-  watch.on('event', _.bind(this._onDeployEvent, this));
-  this.watchers[key] = watch.run();
+  watch = client.watcher(key);
+  watch.on('change', _.bind(this._onDeployEvent, this));
+  this.watchers[key] = watch;
 };
 
 

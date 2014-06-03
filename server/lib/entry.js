@@ -38,11 +38,12 @@ function entry(options) {
 
   // coerce commandline arguments to comma delimited string
   if (options.argv.peers) {
-    if (typeof(options.argv.peers) === 'object') {
-      options.etcd_hosts = options.argv.peers.join(',');
-    } else {
-      options.etcd_hosts = options.argv.peers;
+    var splitted = options.argv.peers.split(':');
+    if (splitted) {
+      options.etcd_host = splitted[0];
+      options.etcd_port = splitted[1];
     }
+    options.etcd_hosts = options.argv.peers;
   }
   if (options.argv.b) {
     l = options.argv.b.split(':');
@@ -92,7 +93,6 @@ function entry(options) {
   api.register(options, server, app);
 
   de = new deploy.Deploy(options);
-  et = new etcd.Client({urls: options.etcd_hosts});
   options.deploy_instance = de;
 
   async.auto({
@@ -105,7 +105,7 @@ function entry(options) {
       async.forEach([options.data_dir, options.exe_dir], iter, callback);
     },
     register: ['makedirs', function(callback) {
-      var services, et, etcd_hosts = options.etcd_hosts.replace(/.*?:\/\//g, ""),
+      var services, etcd_hosts = options.etcd_hosts.replace(/.*?:\/\//g, ""),
 
       services = registry(etcd_hosts);
       services.join(options.service_name, {
@@ -117,12 +117,18 @@ function entry(options) {
     }],
     deploy: ['register', function(callback) {
       log.infof('Using etcd hosts: ${hosts}', {hosts: options.etcd_hosts});
-      log.infof('Listening on ${host}:${port}', {host: options.bind_host, port: options.bind_port});
       de.run(callback);
     }],
     listen: ['deploy', function(callback) {
+      log.infof('Listening on ${host}:${port}', {host: options.bind_host, port: options.bind_port});
       server.listen(options.bind_port, options.bind_host, callback);
     }]
+  }, function(err) {
+    if (err) {
+      log.errorf("error", {err: err});
+      process.exit(1);
+    }  
+    log.info('running');
   });
 }
 
