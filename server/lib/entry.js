@@ -76,6 +76,11 @@ function entry(options) {
     options.addr_port = options.bind_port;
   }
 
+  if (!options.htpasswd_file) {
+    log.error('required: htpasswd file not specified');
+    process.exit(1);
+  }
+
   authDb = auth.loadDBFromFile(options.htpasswd_file);
 
   app.use(express.logger('dev'));
