@@ -19,7 +19,7 @@
     "url": "git://github.com/virgo-agent-toolkit/virgo-update-service.git"
   },
   "scripts": {
-    "prepublish": "npm install && bower install"
+    "prepublish": "bower install"
   },
   "author": "Ryan Phillips <ryan.phillips@rackspace.com>",
   "license": "APACHE-2",
