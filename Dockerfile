@@ -1,5 +1,7 @@
 FROM rphillips/docker-base-image
 
+RUN apt-get -y install git-core
+
 ADD https://github.com/isaacs/nave/raw/v0.4.5/nave.sh /usr/local/bin/nave
 RUN chmod 755 /usr/local/bin/nave
 
