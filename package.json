@@ -19,7 +19,7 @@
     "url": "git://github.com/virgo-agent-toolkit/virgo-update-service.git"
   },
   "scripts": {
-    "install": "node_modules/bower/bin/bower install"
+    "install": "bower install"
   },
   "author": "Ryan Phillips <ryan.phillips@rackspace.com>",
   "license": "APACHE-2",
