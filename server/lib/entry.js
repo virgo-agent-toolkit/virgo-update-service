@@ -92,6 +92,7 @@ function entry(options) {
   api.register(options, server, app);
 
   de = new deploy.Deploy(options);
+  et = new etcd.Client({urls: options.etcd_hosts});
   options.deploy_instance = de;
 
   async.auto({
@@ -112,11 +113,7 @@ function entry(options) {
         port: options.addr_port
       });
 
-      et = new etcd.Client({urls: options.etcd_hosts});
-      et.refresh();
-      et.once('machines', function() {
-        callback();
-      });
+      callback();
     }],
     deploy: ['register', function(callback) {
       log.infof('Using etcd hosts: ${hosts}', {hosts: options.etcd_hosts});

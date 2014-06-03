@@ -13,7 +13,7 @@ var url = require('url');
 var DEFAULTS = {
   timeout: 10000,
   urls: '',
-  machine_refresh: 60000
+  machine_refresh: 0
 };
 
 
@@ -190,7 +190,7 @@ Client.prototype._refresh = function() {
  */
 Client.prototype.refresh = function() {
   var self = this;
-  if (self.refreshTimer) {
+  if (self.refreshTimer || self.options.machine_refresh <= 0) {
     return;
   }
   self.once('machines', function() {
