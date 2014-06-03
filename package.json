@@ -1,6 +1,6 @@
 {
   "name": "virgo-update-service",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "description": "Updater Service for Virgo Services",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,7 @@
     "url": "git://github.com/virgo-agent-toolkit/virgo-update-service.git"
   },
   "scripts": {
-    "prepublish": "bower install"
+    "prepublish": "npm install && bower install"
   },
   "author": "Ryan Phillips <ryan.phillips@rackspace.com>",
   "license": "APACHE-2",
@@ -31,6 +31,8 @@
     "mocha": "1.17.x",
     "should": "3.0.x",
     "jscoverage": "0.3.x",
+    "nodemon": "1.0.x",
+    "bower": "1.2.x",
     "nodemon": "1.0.x"
   },
   "dependencies": {
@@ -41,8 +43,6 @@
     "nodelint": "0.6.2",
     "pkgcloud": "0.8.x",
     "underscore": "~1.4.4",
-    "nodemon": "1.0.x",
-    "bower": "1.2.x",
     "socket.io": "~0.9.16",
     "etcd-registry": "^0.6.1",
     "express-jwt": "~0.1.0",
