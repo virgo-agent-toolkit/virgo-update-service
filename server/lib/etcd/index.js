@@ -10,13 +10,16 @@ var url = require('url');
 var Etcd = require('node-etcd');
 
 var DEFAULTS = {
-  timeout: 10000,
-  urls: '',
-  machine_refresh: 0
+  timeout: 10000
 };
 
 
-var GLOBAL_URLS;
+var GLOBAL_URL;
+
+
+exports.setEndpoints = function(endpoint) {
+  GLOBAL_URL = endpoint;
+};
 
 
 /**
@@ -51,11 +54,8 @@ Lock.prototype.refresh = function(ttl, callback) {
  * @constructor
  * @param options
  */
-function Client(options) {
-  Etcd.call(this);
-  this.options = _.defaults(options || {}, DEFAULTS);
-  this.urls = GLOBAL_URLS || this.options.urls;
-  this.refreshTimer = null;
+function Client(host, port, ssloptions) {
+  Etcd.call(this, host, port, ssloptions);
 }
 util.inherits(Client, Etcd);
 
@@ -206,3 +206,16 @@ Client.prototype.lock = function(key, ttl, lockedCallback, callback) {
  * Export Client
  */
 exports.Client = Client;
+
+
+/**
+ *
+ */
+exports.createClient = function(host, port, ssloptions) {
+  if (!host && !port) {
+    var hostport = GLOBAL_URL.split(':');
+    host = hostport[0];
+    port = hostport[1];
+  }
+  return new Client(host, port, ssloptions)
+};

@@ -1,9 +1,9 @@
-var async = require('async');
-var util = require('util');
-var path = require('path');
 var _ = require('underscore');
+var async = require('async');
+var etcd = require('../etcd');
+var path = require('path');
+var util = require('util');
 
-var Client = require('../etcd').Client;
 
 function NoDeployError() {
   Error.call(this);
@@ -12,8 +12,8 @@ function NoDeployError() {
 util.inherits(NoDeployError, Error);
 
 
-function Global(etcd) {
-  this.etcd = etcd || new Client();
+function Global(client) {
+  this.etcd = client || etcd.createClient();
 }
 
 

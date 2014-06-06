@@ -44,6 +44,7 @@ function entry(options) {
       options.etcd_port = splitted[1];
     }
     options.etcd_hosts = options.argv.peers;
+    etcd.setEndpoints(options.argv.peers);
   }
   if (options.argv.b) {
     l = options.argv.b.split(':');

@@ -6,5 +6,5 @@ Requires=docker.service
 [Service]
 EnvironmentFile=/etc/environment
 ExecStartPre=/usr/bin/docker pull rphillips/virgo-update-service
-ExecStart=/usr/bin/docker run --rm -p 34000:34000 --name virgo-update-service virgo-update-service --peers 10.1.42.1:4001  -t /.nave/installed/0.10.28/lib/node_modules/virgo-update-service/upgrade-service.htpasswd -s 'secret' -u username -a testing --bind-addr 0.0.0.0:34000 --addr ${COREOS_PUBLIC_IPV4}
+ExecStart=/usr/bin/docker run --rm -e COREOS_PUBLIC_IPV4 -p 34000:34000 --name virgo-update-service rphillips/virgo-update-service --peers 10.1.42.1:4001  -t /.nave/installed/0.10.28/lib/node_modules/virgo-update-service/upgrade-service.htpasswd -s 'secret' -u username -a testing --bind-addr 0.0.0.0:34000 --addr ${COREOS_PUBLIC_IPV4}
 ExecStop=/usr/bin/docker kill virgo-update-service
