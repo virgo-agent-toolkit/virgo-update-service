@@ -5,8 +5,21 @@ Requires=docker.service
 
 [Service]
 ExecStartPre=/usr/bin/docker pull rphillips/virgo-update-service
-ExecStart=/usr/bin/docker run --rm -p 34000:34000 --name virgo-update-service rphillips/virgo-update-service
 ExecStop=/usr/bin/docker kill virgo-update-service
+ExecStart=/usr/bin/docker run \
+  -e VIRGO_UPDATE_SERVICE_ETCD_HOST \
+  -e VIRGO_UPDATE_SERVICE_ETCD_PORT \
+  -e VIRGO_UPDATE_SERVICE_BIND_HOST \
+  -e VIRGO_UPDATE_SERVICE_BIND_PORT \
+  -e VIRGO_UPDATE_SERVICE_SECRET \
+  -e VIRGO_UPDATE_SERVICE_PKGCLOUD_USERNAME \
+  -e VIRGO_UPDATE_SERVICE_PKGCLOUD_APIKEY \
+  -e VIRGO_UPDATE_SERVICE_HTPASSWD_FILE \
+  --rm \
+  -p 34000:34000 \
+  --name virgo-update-service \
+  rphillips/virgo-update-service
+
 Environment=VIRGO_UPDATE_SERVICE_ETCD_HOST=127.0.0.1
 Environment=VIRGO_UPDATE_SERVICE_ETCD_PORT=4001
 Environment=VIRGO_UPDATE_SERVICE_BIND_HOST=0.0.0.0
