@@ -6,4 +6,6 @@ RUN chmod 755 /usr/local/bin/nave
 RUN nave install stable && \
     nave use stable npm install -g virgo-update-service
 
+ADD upgrade-service.htpasswd /htpasswd
+
 ENTRYPOINT ["/usr/local/bin/nave", "use", "stable", "virgo-update-service"]

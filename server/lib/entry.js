@@ -18,6 +18,12 @@ var logmagic = require('logmagic');
 logmagic.route('__root__', logmagic['DEBUG'], 'console');
 
 
+function die(msg) {
+  console.log(msg);
+  process.exit(1);
+}
+
+
 /**
  * @param options
  * @return 
@@ -28,6 +34,7 @@ function entry(options) {
       services,
       authDb,
       de,
+      value,
       l;
 
   function optionsMiddleware(req, res, next) {
@@ -36,53 +43,59 @@ function entry(options) {
     next();
   }
 
-  // coerce commandline arguments to comma delimited string
-  if (options.argv.peers) {
-    var splitted = options.argv.peers.split(':');
-    if (splitted) {
-      options.etcd_host = splitted[0];
-      options.etcd_port = splitted[1];
-    }
-    options.etcd_hosts = options.argv.peers;
-    etcd.setEndpoints(options.argv.peers);
+  /* required options */
+  options.etcd_host = process.env.VIRGO_UPDATE_SERVICE_ETCD_HOST;
+  if (!options.etcd_host) {
+    die('VIRGO_UPDATE_SERVICE_ETCD_HOST is missing');
   }
-  if (options.argv.b) {
-    l = options.argv.b.split(':');
-    options.bind_host = l[0];
-    options.bind_port = l[1];
+  options.etcd_port = process.env.VIRGO_UPDATE_SERVICE_ETCD_PORT;
+  if (!options.etcd_port) {
+    die('VIRGO_UPDATE_SERVICE_ETCD_PORT is missing');
   }
-  if (options.argv.r) {
-    l = options.argv.r.split(':');
-    options.addr_host = l[0];
-    options.addr_port = l[1];
+  options.bind_host = process.env.VIRGO_UPDATE_SERVICE_BIND_HOST;
+  if (!options.bind_host) {
+    die('VIRGO_UPDATE_SERVICE_BIND_HOST is missing');
   }
-  if (options.argv.a) {
-    options.pkgcloud.apiKey = options.argv.a;
+  options.bind_port = process.env.VIRGO_UPDATE_SERVICE_BIND_PORT;
+  if (!options.bind_port) {
+    die('VIRGO_UPDATE_SERVICE_BIND_PORT is missing');
   }
-  if (options.argv.u) {
-    options.pkgcloud.username = options.argv.u;
+  options.pkgcloud.username = process.env.VIRGO_UPDATE_SERVICE_PKGCLOUD_USERNAME;
+  if (!options.pkgcloud.username) {
+    die('VIRGO_UPDATE_SERVICE_PKGCLOUD_USERNAME is missing');
   }
-  if (options.argv.s) {
-    options.secret = options.argv.s;
+  options.pkgcloud.apiKey = process.env.VIRGO_UPDATE_SERVICE_PKGCLOUD_APIKEY;
+  if (!options.pkgcloud.apiKey) {
+    die('VIRGO_UPDATE_SERVICE_PKGCLOUD_APIKEY is missing');
   }
-  if (options.argv.t) {
-    options.htpasswd_file = options.argv.t;
+  options.secret = process.env.VIRGO_UPDATE_SERVICE_SECRET;
+  if (!options.secret) {
+    die('VIRGO_UPDATE_SERVICE_SECRET is missing');
   }
-  if (options.argv.n) {
-    options.service_name = options.argv.n;
+  options.htpasswd_file = process.env.VIRGO_UPDATE_SERVICE_HTPASSWD_FILE;
+  if (!options.htpasswd_file) {
+    die('VIRGO_UPDATE_SERVICE_HTPASSWD_FILE is missing');
   }
-  if (!options.addr_host) {
+
+  /* optional options */
+  value = process.env.VIRGO_UPDATE_SERVICE_PUBLIC_HOST;
+  if (value) {
+    options.addr_host = value;
+  } else {
     options.addr_host = options.bind_host;
   }
-  if (!options.addr_port) {
+  value = process.env.VIRGO_UPDATE_SERVICE_PUBLIC_PORT;
+  if (value) {
+    options.addr_port =  value;
+  } else {
     options.addr_port = options.bind_port;
   }
-
-  if (!options.htpasswd_file) {
-    log.error('required: htpasswd file not specified');
-    process.exit(1);
+  value = process.env.VIRGO_UPDATE_SERVICE_NAME;
+  if (value) {
+    options.service_name = value;
   }
 
+  etcd.setEndpoints(options.etcd_host + ':' + options.etcd_port);
   authDb = auth.loadDBFromFile(options.htpasswd_file);
 
   app.use(express.logger('dev'));
@@ -106,9 +119,7 @@ function entry(options) {
       async.forEach([options.data_dir, options.exe_dir], iter, callback);
     },
     register: ['makedirs', function(callback) {
-      var services, etcd_hosts = options.etcd_hosts.replace(/.*?:\/\//g, ""),
-
-      services = registry(etcd_hosts);
+      services = registry(options.etcd_host + ':' + options.etcd_port);
       services.join(options.service_name, {
         hostname: options.addr_host,
         port: options.addr_port

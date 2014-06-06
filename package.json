@@ -52,7 +52,6 @@
     "request": "~2.33.0",
     "roundround": "~0.2.0",
     "network-address": "0.0.4",
-    "yargs": "~1.0.15",
     "sprintf": "^0.1.3"
   }
 }
