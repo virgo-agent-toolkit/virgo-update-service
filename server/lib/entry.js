@@ -37,12 +37,6 @@ function entry(options) {
       value,
       l;
 
-  function optionsMiddleware(req, res, next) {
-    req.globalOptions = options;
-    req.authDb = authDb;
-    next();
-  }
-
   /* required options */
   options.etcd_host = process.env.VIRGO_UPDATE_SERVICE_ETCD_HOST;
   if (!options.etcd_host) {
@@ -95,6 +89,12 @@ function entry(options) {
     options.service_name = value;
   }
 
+  function optionsMiddleware(req, res, next) {
+    req.globalOptions = options;
+    req.authDb = authDb;
+    next();
+  }
+
   etcd.setEndpoints(options.etcd_host + ':' + options.etcd_port);
   authDb = auth.loadDBFromFile(options.htpasswd_file);
 
@@ -120,11 +120,7 @@ function entry(options) {
     },
     register: ['makedirs', function(callback) {
       services = registry(options.etcd_host + ':' + options.etcd_port);
-      services.join(options.service_name, {
-        hostname: options.addr_host,
-        port: options.addr_port
-      });
-
+      services.join(options.service_name, { hostname: options.addr_host, port: options.addr_port });
       callback();
     }],
     deploy: ['register', function(callback) {

@@ -94,9 +94,7 @@ function _availableRemoteVersions(req, res) {
 }
 
 function _nodes(req, res) {
-  var hosts = req.globalOptions.etcd_hosts.replace(/.*?:\/\//g, ""),
-      reg = registry(hosts);
-
+  var reg = registry(req.globalOptions.etcd_host + ':' + req.globalOptions.etcd_port);
   reg.list(req.globalOptions.service_name, function(err, s) {
     if (err) {
       res.json(new messages.ErrorResponse(err));
