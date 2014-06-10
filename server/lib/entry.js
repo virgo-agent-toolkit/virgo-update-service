@@ -8,6 +8,7 @@ var http = require('http');
 var mkdirp = require('mkdirp');
 var path = require('path');
 var registry = require('etcd-registry');
+var sprintf = require('sprintf').sprintf;
 var url = require('url');
 var _ = require('underscore');
 
@@ -70,6 +71,16 @@ function entry(options) {
   if (!options.htpasswd_file) {
     die('VIRGO_UPDATE_SERVICE_HTPASSWD_FILE is missing');
   }
+  options.default_channels = process.env.VIRGO_UPDATE_SERVICE_DEFAULT_CHANNELS;
+  if (!options.default_channels) {
+    die('VIRGO_UPDATE_SERVICE_DEFAULT_CHANNELS is missing');
+  } else {
+    options.default_channels = options.default_channels.split(',');
+  }
+  options.default_channel_version = process.env.VIRGO_UPDATE_SERVICE_DEFAULT_CHANNEL_VERSION;
+  if (!options.default_channel_version) {
+    die('VIRGO_UPDATE_SERVICE_DEFAULT_CHANNEL_VERSION is missing');
+  }
 
   /* optional options */
   value = process.env.VIRGO_UPDATE_SERVICE_PUBLIC_HOST;
@@ -109,6 +120,9 @@ function entry(options) {
   de = new deploy.Deploy(options);
   options.deploy_instance = de;
 
+  log.infof('Using etcd ${host}:${port}', {host: options.etcd_host, port: options.etcd_port});
+  log.infof('Listening on ${host}:${port}', {host: options.bind_host, port: options.bind_port});
+
   async.auto({
     makedirs: function(callback) {
       function iter(dir, callback) {
@@ -123,12 +137,14 @@ function entry(options) {
       services.join(options.service_name, { hostname: options.addr_host, port: options.addr_port });
       callback();
     }],
-    deploy: ['register', function(callback) {
-      log.infof('Using etcd hosts: ${hosts}', {hosts: options.etcd_hosts});
+    create: ['register', function(callback) {
+      log.infof('Checking for default channels', {channels: options.default_channels});
+      de.createDefaultChannels(callback);
+    }],
+    deploy: ['create', function(callback) {
       de.run(callback);
     }],
     listen: ['deploy', function(callback) {
-      log.infof('Listening on ${host}:${port}', {host: options.bind_host, port: options.bind_port});
       server.listen(options.bind_port, options.bind_host, callback);
     }]
   }, function(err) {

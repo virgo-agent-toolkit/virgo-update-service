@@ -26,8 +26,8 @@ Global.prototype.getChannels = function(callback) {
       callback(err);
       return;
     }
-    if (!resp) {
-      callback(null, []);
+    if (!resp || !resp.node.nodes) {
+      callback(new Error('channels do not exist'));
       return;
     }
     channels = _.map(resp.node.nodes, function(node) {

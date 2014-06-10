@@ -171,10 +171,10 @@ Deploy.prototype.getChannels = function(callback) {
   global.getChannels(function(err, results) {
     if (err) {
       callback(err);
-    } else {
-      self._channels = results;
-      callback(null, self._channels);
+      return;
     }
+    self._channels = results;
+    callback(null, self._channels);
   });
 };
 
@@ -278,6 +278,72 @@ Deploy.prototype.getDeployStatus = function(callback) {
   stats.current_downloads = _.keys(CURRENT_DOWNLOADS);
   stats.current_deploys = CURRENT_DEPLOYS;
   callback(null, stats);
+};
+
+Deploy.prototype._createChannels = function(callback) {
+  var self = this,
+    etcdClient = new etcd.Client(self.options.etcd_host, self.options.etcd_port);
+
+  function iter(channel, callback) {
+    var path = '/deploys/' + channel,
+        create = false;
+
+    async.series([
+      function(callback) {
+        etcdClient.get(path, function(err) {
+          if (err) {
+            create = true;
+            callback();
+          } else {
+            callback();
+          }
+        });
+      },
+      function(callback) {
+        if (create) {
+          log.info('Creating channel: ' + channel);
+          etcdClient.set(path, JSON.stringify({version: self.options.default_channel_version}), callback);
+        } else {
+          callback();
+        }
+      }
+    ], callback);
+  }
+  async.series([
+    function(callback) {
+      etcdClient.mkdir('/deploys', function(err) {
+        if (err) {
+          log.info('mkdir failed creating /deploys', {err: err});
+        }
+        callback();
+      });
+    },
+    function(callback) {
+      async.forEach(self.options.default_channels, iter, callback);
+    }
+  ], callback);
+};
+
+Deploy.prototype.createDefaultChannels = function(callback) {
+  var etcdClient = new etcd.Client(this.options.etcd_host, this.options.etcd_port),
+      lockKey = 'virgo_creation_lock',
+      global = new Global(),
+      self = this;
+
+  function perform(lock, callback) {
+    async.series([
+      function(callback) {
+        global.getChannels(function(err) {
+          if (err) {
+            self._createChannels(callback);
+          } else {
+            callback();
+          }
+        });
+      }
+    ], callback);
+  }
+  etcdClient.lock(lockKey, 30, perform, callback);
 };
 
 
