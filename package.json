@@ -1,6 +1,6 @@
 {
   "name": "virgo-update-service",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "Updater Service for Virgo Services",
   "main": "index.js",
   "scripts": {
