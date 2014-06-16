@@ -127,10 +127,37 @@ Client.prototype.renewLock = function(key, ttl, index, callback) {
 Client.prototype.cache = function(key, ttl, work, callback) {
   var self = this;
 
+  function populate(callback) {
+    work(function() {
+      var args = Array.prototype.slice.call(arguments, 0),
+      values;
+      if (args[0]) {
+        callback(args[0]);
+      } else {
+        try {
+          values = JSON.stringify(args);
+        } catch (try_err) {
+          callback(try_err);
+          return;
+        }
+        self.set(key, {ttl: ttl, value: values}, function(err) {
+          if (err) {
+            callback(err);
+            return;
+          }
+          callback.apply(null, args);
+        });
+      }
+    });
+  }
+
   self.get(key, function(err, resp) {
     if (err) {
-      callback(err);
-      return;
+      // not a cache miss
+      if (err.errorCode !== 100) {
+        callback(err);
+        return;
+      }
     }
     if (resp) {
       var args;
@@ -142,27 +169,7 @@ Client.prototype.cache = function(key, ttl, work, callback) {
       }
       callback.apply(null, args);
     } else {
-      work(function() {
-        var args = Array.prototype.slice.call(arguments, 0),
-            values;
-        if (args[0]) {
-          callback(args[0]);
-        } else {
-          try {
-            values = JSON.stringify(args);
-          } catch (try_err) {
-            callback(try_err);
-            return;
-          }
-          self.set(key, {ttl: ttl, value: values}, function(err) {
-            if (err) {
-              callback(err);
-              return;
-            }
-            callback.apply(null, args);
-          });
-        }
-      });
+      populate(callback);
     }
   });
 };

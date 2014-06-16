@@ -211,6 +211,6 @@ exports.register = function(options, server, app) {
   app.get(PREFIX + '/channels', _availableChannels);
   app.get(PREFIX + '/nodes', _nodes);
   app.post(PREFIX + '/deploy', expressJwt({secret: options.secret}), _deploy);
-  app.get(PREFIX + '/deploy/status', _deployStatus);
+  app.get(PREFIX + '/deploy/status', expressJwt({secret: options.secret}), _deployStatus);
 };
 
