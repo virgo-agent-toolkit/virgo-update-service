@@ -64,7 +64,7 @@ function _currentDeploys(req, res) {
 }
 
 function _availableRemoteVersions(req, res) {
-  var cl = new etcd.Client(),
+  var cl = new etcd.Client(req.globalOptions.etcd_host, req.globalOptions.etcd_port),
       cacheKey = '/cache/remoteVersions';
 
   function work(callback) {
@@ -105,7 +105,7 @@ function _nodes(req, res) {
 }
 
 function _deploy(req, res) {
-  var cl = new etcd.Client(),
+  var cl = new etcd.Client(req.globalOptions.etcd_host, req.globalOptions.etcd_port),
       key,
       payload,
       de = req.globalOptions.deploy_instance;
