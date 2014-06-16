@@ -130,17 +130,17 @@ Client.prototype.cache = function(key, ttl, work, callback) {
   function populate(callback) {
     work(function() {
       var args = Array.prototype.slice.call(arguments, 0),
-          values;
+          value;
       if (args[0]) {
         callback(args[0]);
       } else {
         try {
-          values = JSON.stringify(args);
+          value = JSON.stringify(args);
         } catch (try_err) {
           callback(try_err);
           return;
         }
-        self.set(key, {ttl: ttl, value: values}, function(err) {
+        self.set(key, value, {ttl: ttl}, function(err) {
           if (err) {
             callback(err);
             return;
