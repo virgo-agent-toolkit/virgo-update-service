@@ -108,17 +108,16 @@ function _nodes(req, res) {
 
 function _deploy(req, res) {
   var cl = new etcd.Client(req.globalOptions.etcd_host, req.globalOptions.etcd_port),
-      key,
-      payload,
+      key, payload,
       de = req.globalOptions.deploy_instance;
 
   if (req.body.newChannelName) {
     req.body.channel = req.body.newChannelName;
-    de._startWatcher(req.body.channel);
+    de.startWatcher(req.body.channel);
   }
-  
-  key = '/deploys/' + req.body.channel;
-  payload = { value: JSON.stringify({ version: req.body.version }) };
+
+  key = de.generateDeployKey(req.body.channel);
+  payload = JSON.stringify({ version: req.body.version });
   cl.set(key, payload, function(err) {
     if (err) {
       res.json(new messages.ErrorResponse(err));

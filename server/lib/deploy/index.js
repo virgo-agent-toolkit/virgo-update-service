@@ -35,12 +35,12 @@ util.inherits(Deploy, EventEmitter);
 
 
 /**
- * _generateDeployKey
+ * generateDeployKey
  *
  * @param channel
  * @return
  */
-Deploy.prototype._generateDeployKey = function(channel) {
+Deploy.prototype.generateDeployKey = function(channel) {
   return sprintf(DEFAULT_DEPLOYS_KEY, {channel: channel});
 };
 
@@ -66,7 +66,7 @@ Deploy.prototype._register = function(channel, version, callback) {
  * @return
  */
 Deploy.prototype._deregister = function(channel, callback) {
-  log.info('Deregistering Deploy', { channel: channel });
+  log.info('Deregistering Deploy', CURRENT_DEPLOYS[channel]);
   delete CURRENT_DEPLOYS[channel];
   process.nextTick(callback);
 };
@@ -102,10 +102,10 @@ Deploy.prototype._download = function(version, callback) {
  * @param response
  * @return
  */
-Deploy.prototype._onDeployEvent = function(response, watch) {
+Deploy.prototype._onDeployEvent = function(channel, watch, response) {
   var channel = path.basename(watch.key),
-      self = this,
-      values;
+      values,
+      self = this;
 
   try {
     values = JSON.parse(response.node.value);
@@ -127,13 +127,13 @@ Deploy.prototype._onDeployEvent = function(response, watch) {
       });
       return;
     }
-    log.info('deploy succeeded');
+    log.info('deploy succeeded', { channel: channel, version: values.version });
   });
 };
 
 
-Deploy.prototype._startWatcher = function(channel) {
-  var key = this._generateDeployKey(channel),
+Deploy.prototype.startWatcher = function(channel) {
+  var key = this.generateDeployKey(channel),
       client = new etcd.Client(this.options.etcd_host, this.options.etcd_port),
       watch;
 
@@ -142,7 +142,7 @@ Deploy.prototype._startWatcher = function(channel) {
   }
 
   watch = client.watcher(key);
-  watch.on('change', _.bind(this._onDeployEvent, this));
+  watch.on('change', _.bind(this._onDeployEvent, this, channel, watch));
   this.watchers[key] = watch;
 };
 
@@ -155,7 +155,7 @@ Deploy.prototype._startWatcher = function(channel) {
  */
 Deploy.prototype._startWatchers = function(callback) {
   log.info('Starting Watchers');
-  _.each(this._channels, _.bind(this._startWatcher, this));
+  _.each(this._channels, _.bind(this.startWatcher, this));
   process.nextTick(callback);
 };
 

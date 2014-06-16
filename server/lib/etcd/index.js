@@ -130,7 +130,7 @@ Client.prototype.cache = function(key, ttl, work, callback) {
   function populate(callback) {
     work(function() {
       var args = Array.prototype.slice.call(arguments, 0),
-      values;
+          values;
       if (args[0]) {
         callback(args[0]);
       } else {
@@ -159,7 +159,7 @@ Client.prototype.cache = function(key, ttl, work, callback) {
         return;
       }
     }
-    if (resp) {
+    if (resp && resp.node.value !== "") {
       var args;
       try {
         args = JSON.parse(resp.node.value);
