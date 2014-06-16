@@ -1,25 +1,19 @@
 {
   "name": "virgo-update-service",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "Updater Service for Virgo Services",
-  "main": "index.js",
+  "main": {
+    "lib": "./server/lib"
+  },
   "scripts": {
-    "run-dev": "make run-dev",
-    "test": "make test",
-    "lint": "make lint"
+    "prepublish": "bower install"
   },
   "bin": {
     "virgo-update-service": "./server/bin/virgo-update-service"
   },
-  "main": {
-    "lib": "./server/lib"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/virgo-agent-toolkit/virgo-update-service.git"
-  },
-  "scripts": {
-    "prepublish": "bower install"
   },
   "author": "Ryan Phillips <ryan.phillips@rackspace.com>",
   "license": "APACHE-2",
@@ -32,26 +26,26 @@
     "should": "3.0.x",
     "jscoverage": "0.3.x",
     "nodemon": "1.0.x",
-    "bower": "1.2.x",
-    "nodemon": "1.0.x"
+    "bower": "1.2.x"
   },
   "dependencies": {
     "async": "0.2.8",
-    "node-etcd": "2.1.x",
-    "express": "3.4.x",
-    "mkdirp": "~0.3.5",
-    "nodelint": "0.6.2",
-    "pkgcloud": "0.8.x",
-    "underscore": "~1.4.4",
-    "socket.io": "~0.9.16",
     "etcd-registry": "^0.6.1",
+    "express": "3.4.x",
     "express-jwt": "~0.1.0",
     "jsonwebtoken": "~0.1.0",
-    "socketio-jwt": "~2.0.1",
     "logmagic": "~0.1.4",
+    "mkdirp": "~0.3.5",
+    "network-address": "0.0.4",
+    "node-etcd": "2.1.x",
+    "nodelint": "0.6.2",
+    "pkgcloud": "0.8.x",
     "request": "~2.33.0",
     "roundround": "~0.2.0",
-    "network-address": "0.0.4",
-    "sprintf": "^0.1.3"
+    "semver": "^2.3.0",
+    "socket.io": "~0.9.16",
+    "socketio-jwt": "~2.0.1",
+    "sprintf": "^0.1.3",
+    "underscore": "~1.4.4"
   }
 }

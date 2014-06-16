@@ -9,6 +9,7 @@ var jwt = require('jsonwebtoken');
 var messages = require('./messages');
 var pkgcloud = require('pkgcloud');
 var registry = require('etcd-registry');
+var semver = require('semver');
 var socketioJwt = require('socketio-jwt');
 var _ = require('underscore');
 
@@ -77,9 +78,10 @@ function _availableRemoteVersions(req, res) {
       var results = _.pluck(containers, 'name')
         .filter(function(name) {
           return (/^[0-9.\-]+$/).test(name);
-        })
-        .sort()
-        .reverse();
+        });
+      results = results.sort(function(a, b) {
+        return semver.lt(a, b);
+      });
       callback(null, results);
     });
   }
