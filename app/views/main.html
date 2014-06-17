@@ -16,7 +16,6 @@
         <div class="panel-body">
           <form novalidate ng-submit="deploy()">
             <p><select required class="form-control" data-style="btn-primary" ng-model="deployData.channel">
-              <option/>
               <option ng-repeat="channel in channels">{{channel}}</option>
             </select></p>
             <p><select required class="form-control" data-style="btn-primary" ng-model="deployData.version">

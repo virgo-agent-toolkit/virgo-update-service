@@ -1,6 +1,6 @@
 {
   "name": "virgo-update-service",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "Updater Service for Virgo Services",
   "main": {
     "lib": "./server/lib"
