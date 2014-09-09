@@ -73,8 +73,8 @@ function entry(options) {
   if (!options.default_channel_version) {
     die('VIRGO_UPDATE_SERVICE_DEFAULT_CHANNEL_VERSION is missing');
   }
-  options.pkgcloud = process.env.VIRGO_UPDATE_PACKAGE_BACKEND;
-  if (!value) {
+  options.pkgbackend = process.env.VIRGO_UPDATE_PACKAGE_BACKEND;
+  if (!options.pkgbackend) {
     options.pkgbackend = 'pkgcloud';;
   }
   options.pkgcloud.username = process.env.VIRGO_UPDATE_SERVICE_PKGCLOUD_USERNAME;
