@@ -349,7 +349,7 @@ Deploy.prototype.createDefaultChannels = function(callback) {
 
 
 function FileDeploy(options) {
-  Deploy.call(this);
+  Deploy.call(this, options);
 }
 util.inherits(FileDeploy, Deploy);
 
