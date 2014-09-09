@@ -85,7 +85,10 @@ function entry(options) {
   if (options.pkgbackend === 'pkgcloud' && !options.pkgcloud.apiKey) {
     die('VIRGO_UPDATE_SERVICE_PKGCLOUD_APIKEY is missing');
   }
-
+  value = process.env.VIRGO_UPDATE_SERVICE_EXE_DIR;
+  if (value) {
+    options.exe_dir = value;
+  }
 
   /* optional options */
   value = process.env.VIRGO_UPDATE_SERVICE_PUBLIC_HOST;
