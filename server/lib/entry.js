@@ -99,6 +99,12 @@ function entry(options) {
   if (value) {
     options.service_name = value;
   }
+  value = process.env.VIRGO_UPDATE_PACKAGE_BACKEND;
+  if (value) {
+    options.pkgbackend = value;
+  } else {
+    options.pkgbackend = 'pkgcloud';
+  }
 
   function optionsMiddleware(req, res, next) {
     req.globalOptions = options;
@@ -117,7 +123,7 @@ function entry(options) {
   app.use(optionsMiddleware);
   api.register(options, server, app);
 
-  de = new deploy.Deploy(options);
+  de = new deploy.create(options.pkgbackend, options);
   options.deploy_instance = de;
 
   log.infof('Using etcd ${host}:${port}', {host: options.etcd_host, port: options.etcd_port});

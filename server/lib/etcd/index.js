@@ -224,5 +224,5 @@ exports.createClient = function(host, port, ssloptions) {
     host = hostport[0];
     port = hostport[1];
   }
-  return new Client(host, port, ssloptions)
+  return new Client(host, port, ssloptions);
 };

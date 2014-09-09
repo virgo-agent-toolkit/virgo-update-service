@@ -18,3 +18,33 @@ The service shall provide the following features:
 
 ![](https://raw.github.com/virgo-agent-toolkit/virgo-update-service/e23675dbc7960b019e92c546579fb27dea4b714b/screenshots/screenshot1.png)
 ![](https://raw.github.com/virgo-agent-toolkit/virgo-update-service/e23675dbc7960b019e92c546579fb27dea4b714b/screenshots/screenshot2.png)
+
+## API
+
+#### Auth
+
+POST /authenticate
+
+#### Versions
+
+GET  /v1/versions/channel/:name
+
+GET  /v1/versions/channel
+
+GET  /v1/versions/remote
+
+GET  /v1/versions/local
+
+#### Channels
+
+GET  /v1/channels
+
+#### Nodes
+
+GET  /v1/nodes
+
+#### Deploy
+
+POST /v1/deploy
+
+GET  /v1/deploy/status

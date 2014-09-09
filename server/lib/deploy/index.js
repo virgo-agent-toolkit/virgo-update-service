@@ -103,9 +103,10 @@ Deploy.prototype._download = function(version, callback) {
  * @return
  */
 Deploy.prototype._onDeployEvent = function(channel, watch, response) {
-  var channel = path.basename(watch.key),
-      values,
+  var values,
       self = this;
+
+  channel = path.basename(watch.key);
 
   try {
     values = JSON.parse(response.node.value);
@@ -347,4 +348,25 @@ Deploy.prototype.createDefaultChannels = function(callback) {
 };
 
 
+function FileDeploy(options) {
+  Deploy.call(this);
+}
+util.inherits(FileDeploy, Deploy);
+
+FileDeploy.prototype._download = function(version, callback) {
+  callback();
+};
+
+
+function create(name, options) {
+  switch(name.toLowerCase()) {
+  case 'file':
+    return new FileDeploy(options);
+  default:
+    return new Deploy(options);
+  }  
+}
+
+
 exports.Deploy = Deploy;
+exports.create = create;

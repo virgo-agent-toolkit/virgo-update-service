@@ -1,7 +1,3 @@
-REPORTER = spec
-MOCHA_FLAGS = -t 5000 -s 500
-MOCHA_CMDLINE = ./node_modules/.bin/mocha --reporter $(REPORTER) $(MOCHA_FLAGS)
-
 all: lint test
 
 lint:
@@ -29,19 +25,7 @@ deps:
 	npm install
 	./node_modules/.bin/bower install --allow-root
 
-autotest:
-	@NODE_ENV=test ./node_modules/.bin/mocha \
-		--reporter $(REPORTER) \
-		--growl \
-		--watch
-
-test:
-	@NODE_ENV=test ./node_modules/.bin/mocha \
-		--reporter $(REPORTER) \
-		--growl \
-		--watch
-
 test: lint
-	$(MOCHA_CMDLINE)
+	@NODE_ENV=test ./node_modules/.bin/tap test/*.js
 
 .PHONY: test all lint
