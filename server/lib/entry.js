@@ -55,14 +55,6 @@ function entry(options) {
   if (!options.bind_port) {
     die('VIRGO_UPDATE_SERVICE_BIND_PORT is missing');
   }
-  options.pkgcloud.username = process.env.VIRGO_UPDATE_SERVICE_PKGCLOUD_USERNAME;
-  if (!options.pkgcloud.username) {
-    die('VIRGO_UPDATE_SERVICE_PKGCLOUD_USERNAME is missing');
-  }
-  options.pkgcloud.apiKey = process.env.VIRGO_UPDATE_SERVICE_PKGCLOUD_APIKEY;
-  if (!options.pkgcloud.apiKey) {
-    die('VIRGO_UPDATE_SERVICE_PKGCLOUD_APIKEY is missing');
-  }
   options.secret = process.env.VIRGO_UPDATE_SERVICE_SECRET;
   if (!options.secret) {
     die('VIRGO_UPDATE_SERVICE_SECRET is missing');
@@ -81,6 +73,19 @@ function entry(options) {
   if (!options.default_channel_version) {
     die('VIRGO_UPDATE_SERVICE_DEFAULT_CHANNEL_VERSION is missing');
   }
+  options.pkgcloud = process.env.VIRGO_UPDATE_PACKAGE_BACKEND;
+  if (!value) {
+    options.pkgbackend = 'pkgcloud';;
+  }
+  options.pkgcloud.username = process.env.VIRGO_UPDATE_SERVICE_PKGCLOUD_USERNAME;
+  if (options.pkgbackend === 'pkgcloud' && !options.pkgcloud.username) {
+    die('VIRGO_UPDATE_SERVICE_PKGCLOUD_USERNAME is missing');
+  }
+  options.pkgcloud.apiKey = process.env.VIRGO_UPDATE_SERVICE_PKGCLOUD_APIKEY;
+  if (options.pkgbackend === 'pkgcloud' && !options.pkgcloud.apiKey) {
+    die('VIRGO_UPDATE_SERVICE_PKGCLOUD_APIKEY is missing');
+  }
+
 
   /* optional options */
   value = process.env.VIRGO_UPDATE_SERVICE_PUBLIC_HOST;
@@ -98,12 +103,6 @@ function entry(options) {
   value = process.env.VIRGO_UPDATE_SERVICE_NAME;
   if (value) {
     options.service_name = value;
-  }
-  value = process.env.VIRGO_UPDATE_PACKAGE_BACKEND;
-  if (value) {
-    options.pkgbackend = value;
-  } else {
-    options.pkgbackend = 'pkgcloud';
   }
 
   function optionsMiddleware(req, res, next) {
