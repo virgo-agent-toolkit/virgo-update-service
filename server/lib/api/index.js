@@ -39,8 +39,7 @@ function onConnection(socket) {
   });
 }
 
-function _availableLocalVersions(req, res) {
-  var base_dir = req.globalOptions.exe_dir;
+function _fetchLocalVersions(base_dir, callback) {
   async.auto({
     'readdir': function(callback) {
       fs.readdir(base_dir, callback);
@@ -50,12 +49,22 @@ function _availableLocalVersions(req, res) {
         return fs.lstatSync(path.join(base_dir, dir)).isDirectory();
       });
       callback(null, versions);
-    }]
+    }],
   }, function(err, results) {
+    if (err) {
+      return callback(err);
+    }
+    callback(null, results.filtered.reverse());
+  });
+}
+
+function _availableLocalVersions(req, res) {
+  var base_dir = req.globalOptions.exe_dir;
+  _fetchLocalVersions(base_dir, function(err, results) {
     if (err) {
       res.json(new messages.ErrorResponse(err));
     } else {
-      res.json(new messages.Response(results.filtered.reverse()));
+      res.json(new messages.Response());
     }
   });
 }
@@ -66,9 +75,10 @@ function _currentDeploys(req, res) {
 
 function _availableRemoteVersions(req, res) {
   var cl = new etcd.Client(req.globalOptions.etcd_host, req.globalOptions.etcd_port),
-      cacheKey = '/cache/remoteVersions';
+      cacheKey = '/cache/remoteVersions',
+      work;
 
-  function work(callback) {
+  function workRemote(callback) {
     var client = pkgcloud.storage.createClient(req.globalOptions.pkgcloud);
     client.getContainers(function(err, containers) {
       if (err) {
@@ -85,6 +95,12 @@ function _availableRemoteVersions(req, res) {
       callback(null, results);
     });
   }
+
+  function workLocal(callback) {
+    _fetchLocalVersions(req.globalOptions.exe_dir, callback);
+  }
+
+  work = req.globalOptions.pkgbackend === "file" ? workLocal : workRemote;
 
   cl.cache(cacheKey, 5 * 60, work, function(err, results) {
     if (err) {
