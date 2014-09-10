@@ -127,6 +127,12 @@ Client.prototype.renewLock = function(key, ttl, index, callback) {
 Client.prototype.cache = function(key, ttl, work, callback) {
   var self = this;
 
+  // cache disabled
+  if (ttl === 0) {
+    work(callback);
+    return;
+  }
+
   function populate(callback) {
     work(function() {
       var args = Array.prototype.slice.call(arguments, 0),

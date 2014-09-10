@@ -89,6 +89,10 @@ function entry(options) {
   if (value) {
     options.exe_dir = value;
   }
+  value = process.env.VIRGO_UPDATE_VERSION_CACHE_TTL;
+  if (value) {
+    options.version_cache_timeout = value.parseInt();
+  }
 
   /* optional options */
   value = process.env.VIRGO_UPDATE_SERVICE_PUBLIC_HOST;
