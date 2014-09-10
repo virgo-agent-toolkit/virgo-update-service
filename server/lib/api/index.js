@@ -102,7 +102,7 @@ function _availableRemoteVersions(req, res) {
 
   work = req.globalOptions.pkgbackend === "file" ? workLocal : workRemote;
 
-  cl.cache(cacheKey, 5 * 60, work, function(err, results) {
+  cl.cache(cacheKey, req.globalOptions.version_cache_timeout, work, function(err, results) {
     if (err) {
       res.json(new messages.ErrorResponse(err));
     } else {
