@@ -91,7 +91,7 @@ function entry(options) {
   }
   value = process.env.VIRGO_UPDATE_VERSION_CACHE_TTL;
   if (value) {
-    options.version_cache_timeout = value.parseInt();
+    options.version_cache_timeout = value;
   }
 
   /* optional options */
