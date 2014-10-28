@@ -4,6 +4,7 @@ var fs = require('fs');
 var _ = require('underscore');
 var entry = require('../lib/entry').entry;
 var log = require('logmagic').local('virgo-upgrade-service');
+var argv = require('yargs').argv;
 
 var default_options = {
   pkgcloud: { provider: 'rackspace' },
@@ -19,12 +20,22 @@ var default_options = {
   version_cache_timeout: 5 * 60,
   etcd_port: 4001,
   default_channels: [],
-  default_channel_version: ''
+  default_channel_version: '',
+  pkgbackend: 'pkgcloud'
 };
 
 
 function main() {
-  entry(_.defaults({}, default_options));
+  var config = {};
+  if (argv.c) {
+    try {
+      config = JSON.parse(fs.readFileSync(argv.c));
+    } catch (err) {
+      console.log(err);
+      process.exit(1);
+    }
+  }
+  entry(_.defaults(config, default_options));
 }
 
 main();

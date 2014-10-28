@@ -39,59 +39,81 @@ function entry(options) {
       l;
 
   /* required options */
-  options.etcd_host = process.env.VIRGO_UPDATE_SERVICE_ETCD_HOST;
   if (!options.etcd_host) {
-    die('VIRGO_UPDATE_SERVICE_ETCD_HOST is missing');
+    options.etcd_host = process.env.VIRGO_UPDATE_SERVICE_ETCD_HOST;
+    if (!options.etcd_host) {
+      die('VIRGO_UPDATE_SERVICE_ETCD_HOST is missing');
+    }
   }
-  options.etcd_port = process.env.VIRGO_UPDATE_SERVICE_ETCD_PORT;
   if (!options.etcd_port) {
-    die('VIRGO_UPDATE_SERVICE_ETCD_PORT is missing');
+    options.etcd_port = process.env.VIRGO_UPDATE_SERVICE_ETCD_PORT;
+    if (!options.etcd_port) {
+      die('VIRGO_UPDATE_SERVICE_ETCD_PORT is missing');
+    }
   }
-  options.bind_host = process.env.VIRGO_UPDATE_SERVICE_BIND_HOST;
   if (!options.bind_host) {
-    die('VIRGO_UPDATE_SERVICE_BIND_HOST is missing');
+    options.bind_host = process.env.VIRGO_UPDATE_SERVICE_BIND_HOST;
+    if (!options.bind_host) {
+      die('VIRGO_UPDATE_SERVICE_BIND_HOST is missing');
+    }
   }
-  options.bind_port = process.env.VIRGO_UPDATE_SERVICE_BIND_PORT;
   if (!options.bind_port) {
-    die('VIRGO_UPDATE_SERVICE_BIND_PORT is missing');
+    options.bind_port = process.env.VIRGO_UPDATE_SERVICE_BIND_PORT;
+    if (!options.bind_port) {
+      die('VIRGO_UPDATE_SERVICE_BIND_PORT is missing');
+    }
   }
-  options.secret = process.env.VIRGO_UPDATE_SERVICE_SECRET;
   if (!options.secret) {
-    die('VIRGO_UPDATE_SERVICE_SECRET is missing');
+    options.secret = process.env.VIRGO_UPDATE_SERVICE_SECRET;
+    if (!options.secret) {
+      die('VIRGO_UPDATE_SERVICE_SECRET is missing');
+    }
   }
-  options.htpasswd_file = process.env.VIRGO_UPDATE_SERVICE_HTPASSWD_FILE;
   if (!options.htpasswd_file) {
-    die('VIRGO_UPDATE_SERVICE_HTPASSWD_FILE is missing');
+    options.htpasswd_file = process.env.VIRGO_UPDATE_SERVICE_HTPASSWD_FILE;
+    if (!options.htpasswd_file) {
+      die('VIRGO_UPDATE_SERVICE_HTPASSWD_FILE is missing');
+    }
   }
-  options.default_channels = process.env.VIRGO_UPDATE_SERVICE_DEFAULT_CHANNELS;
   if (!options.default_channels) {
-    die('VIRGO_UPDATE_SERVICE_DEFAULT_CHANNELS is missing');
-  } else {
-    options.default_channels = options.default_channels.split(',');
+    options.default_channels = process.env.VIRGO_UPDATE_SERVICE_DEFAULT_CHANNELS;
+    if (!options.default_channels) {
+      die('VIRGO_UPDATE_SERVICE_DEFAULT_CHANNELS is missing');
+    }
   }
-  options.default_channel_version = process.env.VIRGO_UPDATE_SERVICE_DEFAULT_CHANNEL_VERSION;
+  options.default_channels = options.default_channels.split(',');
+
   if (!options.default_channel_version) {
-    die('VIRGO_UPDATE_SERVICE_DEFAULT_CHANNEL_VERSION is missing');
+    options.default_channel_version = process.env.VIRGO_UPDATE_SERVICE_DEFAULT_CHANNEL_VERSION;
+    if (!options.default_channel_version) {
+      die('VIRGO_UPDATE_SERVICE_DEFAULT_CHANNEL_VERSION is missing');
+    }
   }
-  options.pkgbackend = process.env.VIRGO_UPDATE_PACKAGE_BACKEND;
   if (!options.pkgbackend) {
-    options.pkgbackend = 'pkgcloud';;
+    options.pkgbackend = process.env.VIRGO_UPDATE_PACKAGE_BACKEND;
   }
-  options.pkgcloud.username = process.env.VIRGO_UPDATE_SERVICE_PKGCLOUD_USERNAME;
-  if (options.pkgbackend === 'pkgcloud' && !options.pkgcloud.username) {
-    die('VIRGO_UPDATE_SERVICE_PKGCLOUD_USERNAME is missing');
+  if (options.pkgbackend === 'pkgcloud') {
+    if(!options.pkgcloud.username) {
+      options.pkgcloud.username = process.env.VIRGO_UPDATE_SERVICE_PKGCLOUD_USERNAME;
+      if(!options.pkgcloud.username) {
+        die('VIRGO_UPDATE_SERVICE_PKGCLOUD_USERNAME is missing');
+      }
+
+      options.pkgcloud.apiKey = process.env.VIRGO_UPDATE_SERVICE_PKGCLOUD_APIKEY;
+      if (!options.pkgcloud.apiKey) {
+        die('VIRGO_UPDATE_SERVICE_PKGCLOUD_APIKEY is missing');
+      }
+    }
   }
-  options.pkgcloud.apiKey = process.env.VIRGO_UPDATE_SERVICE_PKGCLOUD_APIKEY;
-  if (options.pkgbackend === 'pkgcloud' && !options.pkgcloud.apiKey) {
-    die('VIRGO_UPDATE_SERVICE_PKGCLOUD_APIKEY is missing');
+  if (!options.exe_dir) {
+    options.exe_dir = process.env.VIRGO_UPDATE_SERVICE_EXE_DIR;
   }
-  value = process.env.VIRGO_UPDATE_SERVICE_EXE_DIR;
-  if (value) {
-    options.exe_dir = value;
-  }
-  value = process.env.VIRGO_UPDATE_VERSION_CACHE_TTL;
-  if (value) {
-    options.version_cache_timeout = value;
+
+  if (!options.version_cache_timeout) {
+    value = process.env.VIRGO_UPDATE_VERSION_CACHE_TTL;
+    if (value) {
+      options.version_cache_timeout = value;
+    }
   }
 
   /* optional options */
