@@ -4,6 +4,7 @@ var auth = require('./auth');
 var deploy = require('./deploy');
 var etcd = require('./etcd');
 var express = require('express');
+var fs = require('fs');
 var http = require('http');
 var mkdirp = require('mkdirp');
 var path = require('path');
@@ -81,7 +82,6 @@ function entry(options) {
       die('VIRGO_UPDATE_SERVICE_DEFAULT_CHANNELS is missing');
     }
   }
-  options.default_channels = options.default_channels.split(',');
 
   if (!options.default_channel_version) {
     options.default_channel_version = process.env.VIRGO_UPDATE_SERVICE_DEFAULT_CHANNEL_VERSION;
@@ -140,6 +140,13 @@ function entry(options) {
     next();
   }
 
+  try {
+    fs.statSync(options.htpasswd_file);
+  } catch (err) {
+    log.error('Could not read htpasswd_file');
+    process.exit(1);
+  }
+
   etcd.setEndpoints(options.etcd_host + ':' + options.etcd_port);
   authDb = auth.loadDBFromFile(options.htpasswd_file);
 
@@ -183,7 +190,7 @@ function entry(options) {
     }]
   }, function(err) {
     if (err) {
-      log.errorf("error", {err: err});
+      log.errorf("error", {err: err.message});
       process.exit(1);
     }  
     log.info('running');

@@ -19,7 +19,7 @@ var default_options = {
   etcd_host: '127.0.0.1',
   version_cache_timeout: 5 * 60,
   etcd_port: 4001,
-  default_channels: [],
+  default_channels: ['master', 'unstable', 'stable'],
   default_channel_version: '',
   pkgbackend: 'pkgcloud'
 };

@@ -49,7 +49,7 @@ function _fetchLocalVersions(base_dir, callback) {
         return fs.lstatSync(path.join(base_dir, dir)).isDirectory();
       });
       callback(null, versions);
-    }],
+    }]
   }, function(err, results) {
     if (err) {
       return callback(err);
