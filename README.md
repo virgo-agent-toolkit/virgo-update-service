@@ -25,6 +25,23 @@ The service shall provide the following features:
 
 POST /authenticate
 
+JSON Request:
+
+
+				{
+					"username": "test_user",
+					"password": "test_password"
+				 }
+
+
+Response: 200 OK
+
+
+				{
+					"token": "test_token"
+				}
+
+
 #### Versions
 
 GET  /v1/versions/channel/:name
@@ -47,4 +64,26 @@ GET  /v1/nodes
 
 POST /v1/deploy
 
+Supply header to be `authorization : Bearer test_token` --> token received from the `/authenticate` call above.
+
+JSON Request:
+
+
+				{
+					"version": "x.x.x",
+					"channel": "test"
+				}
+
+
+Response: 200 OK
+
+
+				{
+					"success": true,
+					"error": null
+				}
+
+
 GET  /v1/deploy/status
+
+Supply header to be `authorization : Bearer test_token` --> token received from the `/authenticate` call above.
