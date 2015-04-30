@@ -173,6 +173,7 @@ function bucket(options, name) {
     },
     'download': ['files', function(callback, results) {
       _.each(results.files, function(file) {
+        if (!file) return;
         dl.push(file);
       });
       callback();
