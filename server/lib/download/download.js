@@ -166,6 +166,10 @@ Downloader.prototype._download = function(file, callback) {
 function bucket(options, name) {
   var client, concurrency, dl;
 
+  if (!name) {
+    return;
+  }
+
   dl = new Downloader(options);
   dl.setBucket(name);
   concurrency = concurrency || DEFAULT_CONCURRENCY;

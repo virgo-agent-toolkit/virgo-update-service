@@ -84,6 +84,10 @@ Deploy.prototype._download = function(version, callback) {
   log.info('Downloading', { version: version });
   callback = _.once(callback);
   var d = download.bucket(this.options, version);
+  if (!d) {
+    callback();
+    return;
+  }
   CURRENT_DOWNLOADS[version] = true;
   d.on('error', function(err) {
     delete CURRENT_DOWNLOADS[version];
