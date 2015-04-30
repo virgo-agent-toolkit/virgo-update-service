@@ -107,6 +107,10 @@ Deploy.prototype._onDeployEvent = function(channel, watch, response) {
       self = this;
 
   channel = path.basename(watch.key);
+  if (!channel) {
+    log.error('channel is undefined')
+    return;
+  }
 
   try {
     values = JSON.parse(response.node.value);
@@ -288,6 +292,12 @@ Deploy.prototype._createChannels = function(callback) {
   function iter(channel, callback) {
     var path = '/deploys/' + channel,
         create = false;
+
+    if (!channel) {
+      log.error('channel is undefined');
+      callback();
+      return;
+    }
 
     async.series([
       function(callback) {
