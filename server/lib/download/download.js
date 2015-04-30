@@ -86,6 +86,10 @@ Downloader.prototype._download = function(file, callback) {
   var self = this,
       local_path,
       perform_download = false;
+  if (!file.name) {
+    callback();
+    return;
+  }
   local_path = this._getFilePath(file);
   async.auto({
     'create_directory': function(callback) {
