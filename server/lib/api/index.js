@@ -132,6 +132,11 @@ function _deploy(req, res) {
     de.startWatcher(req.body.channel);
   }
 
+  if (!req.body.channel) {
+    res.json(new messages.ErrorResponse(new Error('invalid channel')));
+    return;
+  }
+
   key = de.generateDeployKey(req.body.channel);
   payload = JSON.stringify({ version: req.body.version });
   cl.set(key, payload, function(err) {
