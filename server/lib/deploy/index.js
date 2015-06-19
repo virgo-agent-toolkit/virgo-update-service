@@ -90,15 +90,19 @@ Deploy.prototype._download = function(version, callback) {
   }
   CURRENT_DOWNLOADS[version] = true;
   etcdClient = new etcd.Client(this.options.etcd_host, this.options.etcd_port);
-  etcdClient.setSync('/deploys/downloads', JSON.stringify({"version": version, "status": "Downloading"}), {ttl: 3600});
+  etcdClient.set('/deploys/downloads', JSON.stringify({"version": version, "status": "Downloading"}),
+   {ttl: 3600},log.info('Downloading', { version: version }));
+  
   d.on('error', function(err) {
     delete CURRENT_DOWNLOADS[version];
-    etcdClient.setSync('/deploys/downloads', JSON.stringify({"version": version, "status": "Downloaded"}));
+    etcdClient.set('/deploys/downloads', JSON.stringify({"version": version, "status": "Error"}),
+     log.info('Download Error for', { version: version }));
     callback(err);
   });
   d.on('end', function() {
     delete CURRENT_DOWNLOADS[version];
-    etcdClient.setSync('/deploys/downloads', JSON.stringify({"version": null}));
+    etcdClient.set('/deploys/downloads', JSON.stringify({"version": version, "status": "Downloaded"}),
+     log.info('Downloaded', { version: version }));
     callback();
   });
 };

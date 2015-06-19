@@ -37,7 +37,7 @@
     "logmagic": "~0.1.4",
     "mkdirp": "~0.3.5",
     "network-address": "0.0.4",
-    "node-etcd": "4.0.x",
+    "node-etcd": "2.1.x",
     "nodelint": "0.6.2",
     "pkgcloud": "0.8.x",
     "request": "~2.33.0",
