@@ -89,7 +89,7 @@ Deploy.prototype._download = function(version, callback) {
     return;
   }
   CURRENT_DOWNLOADS[version] = true;
-  etcdClient = new etcd.Client(self.options.etcd_host, self.options.etcd_port);
+  etcdClient = new etcd.Client(this.options.etcd_host, this.options.etcd_port);
   etcdClient.setSync('/deploys/downloads', JSON.stringify({"version": version, "status": "Downloading"}), {ttl: 3600});
   d.on('error', function(err) {
     delete CURRENT_DOWNLOADS[version];
