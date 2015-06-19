@@ -54,8 +54,6 @@ Deploy.prototype.generateDeployKey = function(channel) {
  */
 Deploy.prototype._register = function(channel, version, callback) {
   log.info('Registering Deploy', { channel: channel });
-  etcdClient = new etcd.Client(self.options.etcd_host, self.options.etcd_port);
-  etcdClient.setSync('/deploys/status', JSON.stringify({"channel": channel, "status": "deploying"}));
   CURRENT_DEPLOYS[channel] = { version: version, channel: channel };
   process.nextTick(callback);
 };
@@ -69,8 +67,6 @@ Deploy.prototype._register = function(channel, version, callback) {
  */
 Deploy.prototype._deregister = function(channel, callback) {
   log.info('Deregistering Deploy', CURRENT_DEPLOYS[channel]);
-  etcdClient = new etcd.Client(self.options.etcd_host, self.options.etcd_port);
-  etcdClient.setSync('/deploys/status', JSON.stringify({"channel": channel, "status": "deployed"}));
   delete CURRENT_DEPLOYS[channel];
   process.nextTick(callback);
 };
@@ -93,12 +89,16 @@ Deploy.prototype._download = function(version, callback) {
     return;
   }
   CURRENT_DOWNLOADS[version] = true;
+  etcdClient = new etcd.Client(self.options.etcd_host, self.options.etcd_port);
+  etcdClient.setSync('/deploys/downloads', JSON.stringify({"version": version, "status": "Downloading"}), {ttl: 3600});
   d.on('error', function(err) {
     delete CURRENT_DOWNLOADS[version];
+    etcdClient.setSync('/deploys/downloads', JSON.stringify({"version": version, "status": "Downloaded"}));
     callback(err);
   });
   d.on('end', function() {
     delete CURRENT_DOWNLOADS[version];
+    etcdClient.setSync('/deploys/downloads', JSON.stringify({"version": null}));
     callback();
   });
 };
